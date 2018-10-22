@@ -1,0 +1,27 @@
+{
+  "pages": [
+    "pages/index/main",
+    "pages/my/main",
+    "pages/buy/main",
+    "pages/payfor/main",
+    "pages/myorders/main",
+    "pages/details/main"
+  ],
+  "tabBar": {
+    "list": [{
+      "pagePath": "pages/index/main",
+      "text": "我要烘干",
+      "iconPath": ""
+    }, {
+      "pagePath": "pages/my/main",
+      "text": "我的",
+      "iconPath": ""
+    }]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  }
+}
