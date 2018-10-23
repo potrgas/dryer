@@ -1,101 +1,91 @@
 <template>
-  <div class="container" @click="clickHandle('test click', $event)">
-
-    <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
-      <div class="userinfo-nickname">
-      </div>
-    </div>
-
-    <div class="usermotto">
-      <div class="user-motto">
-      </div>
-    </div>
-
-    <form class="form-container">
-      <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
-    </form>
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
+  <div class="box">
+    <div class="scan"></div>
+    <van-row>
+      <van-col span="12" offset="8">
+        <van-button  type="primary">开始扫码</van-button>
+      </van-col>
+    </van-row>
+    <van-dialog use-slot :asyncClose="true" :show="showBox" show-cancel-button confirm-button-open-type="getUserInfo"
+      @getuserinfo="auth" @getphonenumber="auth">
+      <van-field :value="account.userName" label="用户名" placeholder="请输入用户名" />
+      <van-field :value="account.password" type="password" label="密码" :border="false" placeholder="请输入密码" />
+    </van-dialog>
   </div>
+
 </template>
 
 <script>
+// Use Vuex
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
-      motto: "Hello World",
-      userInfo: {}
+      showBox: true,
+      customer: {
+        radio: "1",
+        type: "paynow",
+        name: "",
+        name: "",
+        address: ""
+      },
+      userInfo: {},
+      account: {}
     };
   },
 
-  components: {
-    card
-  },
+  components: {},
 
   methods: {
+    ...mapMutations({
+      set_userInfo: "set_userinfo"
+    }),
+    onSelectRadio(e) {
+      this.customer.radio = e.currentTarget.dataset.name;
+    },
+    onSelectType(e) {
+      this.customer.type = e.currentTarget.dataset.name;
+    },
+    onClose() {
+      this.showBox = false;
+    },
+    auth(source) {
+      console.log(source);
+      var mo = source.target.userInfo;
+      this.set_userInfo(mo);
+      this.customer.name = mo.nickName;
+      this.customer.mobile = "1181651";
+      this.customer.address = mo.nickName;
+      this.showBox = false;
+    },
     bindViewTap() {
       const url = "../logs/main";
-      wx.navigateTo({ url });
-    },
-    getUserInfo() {
-      // 调用登录接口
-      wx.login({
-        success: () => {
-          wx.getUserInfo({
-            success: res => {
-              this.userInfo = res.userInfo;
-            }
-          });
-        }
+      wx.navigateTo({
+        url
       });
     },
     clickHandle(msg, ev) {
       console.log("clickHandle:", msg, ev);
     }
   },
-
-  created() {
-    // 调用应用实例的方法获取全局数据
-    this.getUserInfo();
-  }
+  created() {}
 };
 </script>
 
 <style scoped>
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.box {
+  padding: 2%;
+}
+.scan {
+  width: 80%;
+  height: 300px;
+  background-color: aqua;
+  margin: auto auto;
 }
 
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
-}
-
-.userinfo-nickname {
-  color: #aaa;
-}
-
-.usermotto {
-  margin-top: 150px;
-}
-
-.form-control {
-  display: block;
-  padding: 0 12px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-}
-
-.counter {
-  display: inline-block;
-  margin: 10px auto;
-  padding: 5px 10px;
-  color: blue;
-  border: 1px solid blue;
+.textshow {
+  font-size: 12;
+  margin-bottom: 2;
+  font-stretch: condensed;
 }
 </style>

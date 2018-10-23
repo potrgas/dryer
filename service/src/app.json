@@ -1,9 +1,23 @@
 {
   "pages": [
     "pages/index/main",
-    "pages/logs/main",
-    "pages/counter/main"
+    "pages/my/main",
+    "pages/buy/main",
+    "pages/payfor/main",
+    "pages/myorders/main",
+    "pages/details/main"
   ],
+  "tabBar": {
+    "list": [{
+      "pagePath": "pages/index/main",
+      "text": "首页",
+      "iconPath": ""
+    }, {
+      "pagePath": "pages/my/main",
+      "text": "我的",
+      "iconPath": ""
+    }]
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
