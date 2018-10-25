@@ -9,6 +9,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk{
+            abiFilters "armeabi", "armeabi-v7a","x86"
+            //输出指定几种abi体系结构下的so库。
+        }
     }
     buildTypes {
         release {
@@ -16,6 +20,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            //jni库的调用会到资源文件夹下libs里面找so文件
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+     }
 }
 
 dependencies {
