@@ -37,7 +37,7 @@
         </van-radio-group>
         <van-row>
           <van-col span="8" offset="8">
-            <van-button type="primary">确认提交</van-button>
+            <van-button @click="gotopayfor" type="primary">确认提交</van-button>
           </van-col>
         </van-row>
 
@@ -48,12 +48,12 @@
 
     <van-dialog use-slot async-close :show="showBox" show-cancel-button confirm-button-open-type="getUserInfo"
       @close="onClose" @getuserinfo="auth"  @getphonenumber="auth">
+      <img src="../../../static/images/grunt.png"/>
       是否授权获取您的信息
     </van-dialog>
   </div>
 
 </template>
-
 <script>
 // Use Vuex
 import { mapMutations } from "vuex";
@@ -78,6 +78,11 @@ export default {
     ...mapMutations({
       set_userInfo: "set_userinfo"
     }),
+    gotopayfor() {
+      wx.navigateTo({
+        url: "../payfor/main"
+      });
+    },
     onSelectRadio(e) {
       this.customer.radio = e.currentTarget.dataset.name;
     },
