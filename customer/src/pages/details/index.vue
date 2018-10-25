@@ -26,7 +26,7 @@
        </van-row>
         <van-row>
           <van-col span="8" offset="8">
-            <van-button @click="gotopayfor" type="primary">确认接收</van-button>
+            <van-button @click="gotomy" type="primary">确认接收</van-button>
           </van-col>
         </van-row>
       </van-cell-group>
@@ -55,9 +55,9 @@ export default {
   components: {},
 
   methods: {
-    gotopayfor() {
-      wx.navigateTo({
-        url: "../payfor/main"
+    gotomy() {
+      wx.switchTab({
+        url: "../my/main"
       });
     },
     onSelectRadio(e) {
