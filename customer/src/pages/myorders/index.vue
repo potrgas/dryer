@@ -1,15 +1,22 @@
 <template>
   <div class="box">
     <van-cell-group>
-      <van-cell value="内容" icon="shop" is-link>
+      <van-cell value="待取回" @click="gotodetail(1)" icon="shop" is-link >
         <view slot="title">
-          <span class="van-cell-text">单元格</span>
-          <van-tag type="danger">标签</van-tag>
+          <span class="van-cell-text">2018年12月13日</span>
         </view>
       </van-cell>
-      <van-cell title="单元格" icon="location" is-link />
-      <van-cell title="单元格" border="false">
-        <van-icon slot="right-icon" name="search" class="van-cell__right-icon" />
+    
+     <van-cell value="完成" @click="gotodetail(1)" icon="info-o" is-link>
+        <view slot="title">
+          <span class="van-cell-text">2018年12月14日</span>
+        </view>
+      </van-cell>
+
+       <van-cell value="取消" @click="gotodetail(1)" icon="like-o" is-link>
+        <view slot="title">
+          <span class="van-cell-text">2018年12月15日</span>
+        </view>
       </van-cell>
     </van-cell-group>
   </div>
@@ -33,6 +40,12 @@ export default {
     onClick(e) {
       this.radio = e;
       console.log(e);
+    },
+    gotodetail(key) {
+      const url = "../details/main";
+      wx.navigateTo({
+        url
+      });
     },
     onChange() {
       console.log(2);

@@ -29,12 +29,24 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 2,
 			"list": [
 				{
 					"id": -1,
 					"name": "我的",
-					"pathName": "pages/my/main"
+					"pathName": "pages/my/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "payfor",
+					"pathName": "pages/payfor/main",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "charge",
+					"pathName": "pages/charge/main"
 				}
 			]
 		}

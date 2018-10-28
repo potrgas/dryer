@@ -5,17 +5,20 @@
     "pages/buy/main",
     "pages/payfor/main",
     "pages/myorders/main",
-    "pages/details/main"
+    "pages/details/main",
+    "pages/charge/main"
   ],
   "tabBar": {
     "list": [{
       "pagePath": "pages/index/main",
-      "text": "首页",
-      "iconPath": ""
+      "text": "我要烘干",
+      "iconPath": "static/images/left.png",
+      "selectedIconPath": "static/images/left.png"
     }, {
       "pagePath": "pages/my/main",
       "text": "我的",
-      "iconPath": ""
+      "iconPath": "static/images/right.png",
+      "selectedIconPath": "static/images/right.png"
     }]
   },
   "window": {

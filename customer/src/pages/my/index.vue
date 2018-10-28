@@ -1,6 +1,5 @@
 <template>
   <div  @click="clickHandle('test click', $event)">
-
     <div class="userinfo" @click="bindViewTap">
       <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl"
        background-size="cover" />
@@ -9,7 +8,7 @@
       </div>
     </div>
     <van-cell-group>
-      <van-cell value="9" icon="shop" url="../payfor/main" is-link >
+      <van-cell value="9" icon="shop" url="../buy/main" is-link >
         <view slot="title">
           <span class="van-cell-text">剩余次数</span>
           <van-tag type="danger">9</van-tag>

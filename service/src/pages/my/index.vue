@@ -53,7 +53,6 @@ export default {
       console.log("clickHandle:", msg, ev);
     }
   },
-
   created() {}
 };
 </script>

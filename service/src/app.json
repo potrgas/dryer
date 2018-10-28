@@ -11,11 +11,11 @@
     "list": [{
       "pagePath": "pages/index/main",
       "text": "首页",
-      "iconPath": ""
+      "iconPath": "static/images/left.png"
     }, {
       "pagePath": "pages/my/main",
       "text": "我的",
-      "iconPath": ""
+      "iconPath": "static/images/left.png"
     }]
   },
   "window": {
