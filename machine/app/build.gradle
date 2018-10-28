@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -9,9 +8,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        ndk{
-            abiFilters "armeabi", "armeabi-v7a","x86"
-            //输出指定几种abi体系结构下的so库。
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86"
         }
     }
     buildTypes {
@@ -25,7 +23,7 @@ android {
             //jni库的调用会到资源文件夹下libs里面找so文件
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
-     }
+    }
 }
 
 dependencies {
@@ -36,4 +34,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
