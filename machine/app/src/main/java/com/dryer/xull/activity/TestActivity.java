@@ -10,20 +10,21 @@ import android.widget.Toast;
 import com.dryer.xull.R;
 import com.dryer.xull.utils.LockerPortInterface;
 import com.dryer.xull.utils.LockerSerialportUtil;
+import com.dryer.xull.utils.OnSerialPortCallback;
 import com.dryer.xull.utils.PortPrinterBase;
 
 import java.io.OutputStream;
 
-import butterknife.BindView;
+import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener, LockerPortInterface {
 
-    @BindView(R.id.open)
+    @Bind(R.id.open)
     Button open;
-    @BindView(R.id.close)
+    @Bind(R.id.close)
     Button close;
-    @BindView(R.id.send)
+    @Bind(R.id.send)
     Button send;
     /**
      * 波特率
@@ -34,6 +35,9 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
      */
     private OutputStream mOutputStream;
     private PortPrinterBase portPrinterBase;
+
+
+    OnSerialPortCallback onSerialPortCallback;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +90,9 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     public void onLockerDataReceived(byte[] buffer, int size, String path) {
         final String result = new String(buffer,0,size);
         Log.e("ssss","onLockerDataReceived===="+result);
+        if(onSerialPortCallback!=null){
+            onSerialPortCallback.onCallBack(buffer,size);
+        }
     }
 
     @Override
