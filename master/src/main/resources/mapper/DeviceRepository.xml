@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monkey.core.mapper.DeviceRepository">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.monkey.core.entity.Device">
+        <id column="id" property="id" />
+        <result column="deviceName" property="deviceName" />
+        <result column="deviceNum" property="deviceNum" />
+        <result column="deviceType" property="deviceType" />
+        <result column="pointId" property="pointId" />
+        <result column="creationTime" property="creationTime" />
+        <result column="creatorUserId" property="creatorUserId" />
+        <result column="isDeleted" property="isDeleted" />
+    </resultMap>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ProductDtoMap" type="com.monkey.core.dtos.ProductDto">
+        <id column="id" property="id" />
+        <result column="producName" property="productName" />
+        <result column="producNum" property="productNum" />
+        <result column="producType" property="productType" />
+        <result column="deviceId" property="deviceId" />
+        <result column="productId" property="productId" />
+        <result column="isSale" property="isSale" />
+        <result column="price" property="price" />
+        <result column="description" property="description" />
+        <result column="imageUrl" property="imageUrl" />
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, deviceName, deviceNum, deviceType, pointId, creationTime, creatorUserId, isDeleted
+    </sql>
+    <select id="selectProductsByDevice" resultType="com.monkey.core.dtos.ProductDto">
+    SELECT
+	b.id,
+	a.id productId,
+	a.productName,
+	a.productNum,
+	a.productType,b.deviceId,
+	b.isSale,a.description,a.imageUrl,
+CASE
+	WHEN b.price IS NULL THEN
+	a.price ELSE b.price
+	END AS price
+FROM
+	sale_product a
+	LEFT JOIN sale_device_product b ON a.id = b.productId and b.deviceId=#{deviceId}
+	<where>
+        <if test="name!=null">  and a.productName LIKE '%' #{name} '%'  </if>
+        <if test="type!=null">  and a.productType LIKE '%' #{type} '%'  </if>
+        <if test="num!=null">  and a.productNum LIKE '%' #{num} '%'  </if>
+        <if test="sale!=null">  and b.isSale = #{sale}  </if>
+    </where>
+    </select>
+    <select id="selectProductsByDeviceId" resultType="com.monkey.core.dtos.ProductDto">
+SELECT
+	b.id,
+	c.id productId,
+	c.productName,
+	c.productNum,
+	c.productType,
+	a.id deviceId,
+	b.isSale,
+	c.description,
+	c.imageUrl,
+	b.price
+FROM
+	sale_device a
+	INNER JOIN sale_device_product b ON a.id = b.deviceId
+	INNER JOIN sale_product c ON b.productId = c.id
+WHERE
+	b.isSale = 1
+	AND a.deviceNum = #{deviceNum}
+    </select>
+    <select id="selectByArea" resultType="com.monkey.core.entity.Device">
+        SELECT
+        *
+        FROM
+        sale_device
+        <where>
+            isDeleted =0
+            <if test="code!=null">
+             and   pointId IN (
+                SELECT id FROM sale_point WHERE isDeleted = 0
+                AND areaId IN ( SELECT id FROM sale_tree WHERE levelCode LIKE '${code}%' ) )
+            </if>
+            <if test="ew.sqlSegment!=null">
+                   ${ew.sqlSegment}
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

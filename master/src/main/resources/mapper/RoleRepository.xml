@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monkey.core.mapper.RoleRepository">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.monkey.core.entity.Role">
+        <id column="id" property="id" />
+        <result column="roleName" property="roleName" />
+        <result column="displayName" property="displayName" />
+        <result column="creationTime" property="creationTime" />
+        <result column="creatorUserId" property="creatorUserId" />
+    </resultMap>
+    <resultMap id="RoleDtoMap" type="com.monkey.core.dtos.RoleDto">
+        <id column="id"  property="id" />
+        <result column="roleName" property="roleName" />
+        <result column="displayName" property="displayName" />
+        <result column="description" property="description" />
+        <result column="isActive" property="isActive" />
+        <result column="isStatic" property="isStatic" />
+        <result column="creationTime" property="creationTime" />
+        <collection  property="permissions" ofType="java.lang.String" >
+            <id  column="code"/>
+        </collection >
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, roleName, displayName, creationTime, creatorUserId
+    </sql>
+    <select id="selectRoleAndPermissionsById" parameterType="int" resultMap="RoleDtoMap">
+      SELECT
+	a.id,
+	a.roleName,
+	a.displayName,
+	a.description,
+	a.isActive,
+	a.isStatic,
+	a.creationTime,
+	a.creatorUserId,
+	c.`code`
+FROM
+	sale_role a
+  left	JOIN sale_rolemenu b ON a.id = b.roleId
+left	JOIN sale_menu c ON b.menuId = c.id
+WHERE
+	a.id =#{id}
+    </select>
+
+</mapper>
