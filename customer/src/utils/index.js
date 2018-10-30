@@ -25,13 +25,15 @@ export function getopenId() {
   if (obj != null && obj != "") return;
   wx.login({
     success: function (res) {
+      console.log(res);
       if (res.code) {
-        var l = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + config.appid + '&secret=' +
-          config.appKey + '&js_code=' + res.code + '&grant_type=authorization_code';
+        var l = 'https://dryerservice.leftins.com/api/auth/decode';
         wx.request({
           url: l,
-          data: {},
-          method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
+          data: {
+            code: res.code
+          },
+          method: 'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT  
           // header: {}, // 设置请求的 header  
           success: function (res) {
             console.log(obj);
