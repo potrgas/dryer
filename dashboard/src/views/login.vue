@@ -5,7 +5,7 @@
         <div class="header">
           <a>
             <img class="logo"/>
-            <span class="title">应用名称</span>
+            <span class="title">烘干机</span>
           </a>
         </div>
         <div class="desc">
