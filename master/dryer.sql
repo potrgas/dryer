@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 80011
  Source Host           : 103.45.8.198:3306
- Source Schema         : sale
+ Source Schema         : dryer
 
  Target Server Type    : MySQL
  Target Server Version : 80011
  File Encoding         : 65001
 
- Date: 11/09/2018 21:14:33
+ Date: 30/10/2018 19:58:34
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,6 @@ CREATE TABLE `sale_category`  (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '分类名',
   `creationTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `creatorUserId` int(11) NULL DEFAULT NULL COMMENT '创建人id',
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
@@ -45,9 +44,8 @@ CREATE TABLE `sale_device`  (
   `creationTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `creatorUserId` int(11) NULL DEFAULT NULL COMMENT '创建人id',
   `isDeleted` tinyint(2) NULL DEFAULT 0 COMMENT '软删除  ',
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 694 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sale_device_product
@@ -61,11 +59,10 @@ CREATE TABLE `sale_device_product`  (
   `price` int(10) NULL DEFAULT NULL COMMENT '价格',
   `creationTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `creatorUserId` int(11) NULL DEFAULT NULL COMMENT '创建人id',
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `Ix_id`(`id`) USING BTREE,
   INDEX `fk_device_id`(`deviceId`) USING BTREE,
-  CONSTRAINT `fk_device_id` FOREIGN KEY (`deviceId`) REFERENCES `sale_device` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+  CONSTRAINT `sale_device_product_ibfk_1` FOREIGN KEY (`deviceId`) REFERENCES `sale_device` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -118,7 +115,7 @@ CREATE TABLE `sale_menu`  (
   `creatorUserId` int(11) NULL DEFAULT NULL,
   `isDeleted` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 68 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for sale_order
@@ -134,7 +131,6 @@ CREATE TABLE `sale_order`  (
   `creatorUserId` int(11) NULL DEFAULT NULL COMMENT '创建人id',
   `orderState` int(255) NULL DEFAULT NULL COMMENT '订单状态',
   `payState` int(10) NULL DEFAULT NULL COMMENT '支付状态',
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `deviceId` int(10) NULL DEFAULT NULL COMMENT '设备id',
   `deviceName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备名',
   `deviceType` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备类型',
@@ -161,10 +157,9 @@ CREATE TABLE `sale_payfor`  (
   `wechatpayAgent` varchar(999) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '微信保留',
   `creationTime` datetime(0) NULL DEFAULT NULL,
   `creatorUserId` int(11) NULL DEFAULT NULL,
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `cardUrl` varchar(999) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '退款证书地址',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sale_point
@@ -181,9 +176,8 @@ CREATE TABLE `sale_point`  (
   `x` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'x坐标',
   `y` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'y坐标',
   `areaId` int(11) NULL DEFAULT NULL COMMENT '区域id',
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sale_product
@@ -198,11 +192,10 @@ CREATE TABLE `sale_product`  (
   `creationTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `creatorUserId` int(11) NULL DEFAULT NULL COMMENT '创建人id',
   `isDeleted` tinyint(2) NULL DEFAULT 0 COMMENT '软删除  ',
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `description` varchar(3000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
   `imageUrl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图片路径',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sale_role
@@ -218,10 +211,9 @@ CREATE TABLE `sale_role`  (
   `isStatic` tinyint(4) NULL DEFAULT NULL COMMENT '是否静态',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
   `isDeleted` int(11) NULL DEFAULT 0,
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   PRIMARY KEY (`id`, `roleName`) USING BTREE,
   INDEX `id`(`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for sale_rolemenu
@@ -231,28 +223,33 @@ CREATE TABLE `sale_rolemenu`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'guid',
   `roleId` int(11) NOT NULL,
   `menuId` int(11) NOT NULL,
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `creationTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `creatorUserId` int(11) NULL DEFAULT NULL COMMENT '创建人id',
   INDEX `ix_roleId`(`roleId`) USING BTREE,
   INDEX `ix_menuId`(`menuId`) USING BTREE,
-  CONSTRAINT `fk_role_id` FOREIGN KEY (`roleId`) REFERENCES `sale_role` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+  CONSTRAINT `sale_rolemenu_ibfk_1` FOREIGN KEY (`roleId`) REFERENCES `sale_role` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
--- Table structure for sale_tenant
+-- Table structure for sale_serial
 -- ----------------------------
-DROP TABLE IF EXISTS `sale_tenant`;
-CREATE TABLE `sale_tenant`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
-  `displayName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '显示名',
-  `tenantName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '名称',
-  `creationTime` datetime(0) NULL DEFAULT NULL COMMENT 'd',
-  `creatorUserId` int(11) NULL DEFAULT NULL,
-  `isActive` tinyint(2) NULL DEFAULT NULL COMMENT '1启用  0禁用',
-  `isDeleted` int(255) NULL DEFAULT 0,
+DROP TABLE IF EXISTS `sale_serial`;
+CREATE TABLE `sale_serial`  (
+  `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'guid',
+  `order` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '订单编号',
+  `price` int(11) NOT NULL COMMENT '退款单价格',
+  `backOrder` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '退款单号',
+  `creationTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `creatorUserId` int(11) NULL DEFAULT NULL COMMENT '创建人id',
+  `productId` int(11) NULL DEFAULT NULL COMMENT '商品id',
+  `productName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '商品名',
+  `type` int(255) NULL DEFAULT NULL COMMENT '单号类型 1支付 2退款',
+  `deviceId` int(11) NULL DEFAULT NULL COMMENT '设备id',
+  `deviceName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备名',
+  `pointId` int(11) NULL DEFAULT NULL COMMENT '点位id',
+  `pointName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '点位名',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sale_tree
@@ -264,10 +261,9 @@ CREATE TABLE `sale_tree`  (
   `parentId` int(11) NULL DEFAULT NULL COMMENT '父级id',
   `creationTime` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `creatorUserId` int(11) NULL DEFAULT NULL COMMENT '创建人id',
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `levelCode` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '级别code',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sale_user
@@ -284,11 +280,10 @@ CREATE TABLE `sale_user`  (
   `isActive` tinyint(2) NULL DEFAULT NULL COMMENT '1启用  0禁用',
   `isDeleted` tinyint(2) NULL DEFAULT 0 COMMENT '软删除  ',
   `lastLoginTime` datetime(0) NULL DEFAULT NULL COMMENT '最后登陆时间',
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `areaId` int(11) NULL DEFAULT NULL COMMENT '区域id',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `ix_account`(`account`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for sale_userrole
@@ -300,11 +295,10 @@ CREATE TABLE `sale_userrole`  (
   `roleId` int(11) NOT NULL,
   `creationTime` datetime(0) NULL DEFAULT NULL,
   `creatorUserId` int(11) NULL DEFAULT NULL,
-  `tenantId` int(11) NULL DEFAULT NULL COMMENT '租户id',
   INDEX `ix_userId`(`userId`) USING BTREE,
   INDEX `ix_roleId`(`roleId`) USING BTREE,
-  CONSTRAINT `fk_roleId` FOREIGN KEY (`roleId`) REFERENCES `sale_role` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  CONSTRAINT `fk_userId` FOREIGN KEY (`userId`) REFERENCES `sale_user` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+  CONSTRAINT `sale_userrole_ibfk_1` FOREIGN KEY (`roleId`) REFERENCES `sale_role` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `sale_userrole_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `sale_user` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 SET FOREIGN_KEY_CHECKS = 1;

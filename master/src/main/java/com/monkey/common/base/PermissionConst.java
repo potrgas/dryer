@@ -14,6 +14,19 @@ public interface PermissionConst {
         }
 
     }
+    //运维管理
+    public  static  class  _operation{
+        public static  final  String list="operation:show";
+        public  static  class _staff{
+            public static  final  String list="staff:list";
+        }
+        public  static  class  _pickup{
+            public static  final  String list="pickup:list";
+        }
+        public  static  class _allow{
+            public static  final  String list="allow:list";
+        }
+    }
     public  static  class  _report{
         public static  final  String list="report:show";
         public  static  class _device{
@@ -36,7 +49,6 @@ public interface PermissionConst {
         }
     }
 
-
     public  static  class  _products{
         public static  final  String list="product:show";
         public  static  class _product{
@@ -45,6 +57,13 @@ public interface PermissionConst {
             public static  final  String delete="product:delete";
             public static  final  String batch="product:batch";
             public static  final  String first="product:first";
+        }
+        public  static  class _door{
+            public static  final  String list="door:list";
+            public static  final  String modify="door:modify";
+            public static  final  String delete="door:delete";
+            public static  final  String batch="door:batch";
+            public static  final  String first="door:first";
         }
     }
 

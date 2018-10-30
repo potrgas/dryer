@@ -49,11 +49,6 @@ public class UserServiceImpl extends ServiceImpl<UserRepository, User> implement
         return r;
     }
 
-    @Override
-    public User login(String tenantName, String account) {
-        return _userRepository.selectByTenantAndAccount(tenantName, account);
-    }
-
     /**
      * <p>
      * 创建用户角色信息

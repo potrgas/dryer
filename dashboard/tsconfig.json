@@ -11,9 +11,6 @@
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "node"
-    ],
     "paths": {
       "@/*": [
         "src/*"
