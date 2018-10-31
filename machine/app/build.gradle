@@ -38,4 +38,13 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife:7.0.1'
     /*添加依赖*/
     implementation 'com.github.yuzhiqiang1993:zxing:2.1.4'
+    //implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.retrofit2:retrofit:+'
+    implementation 'com.squareup.retrofit2:converter-gson:+'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:+'
+    implementation 'com.google.code.gson:gson:2.2.4'
+    implementation 'io.reactivex:rxjava:+'
+    implementation 'com.trello:rxlifecycle:+'
+    implementation 'com.trello:rxlifecycle-components:+'
+    implementation 'com.orhanobut:logger:1.15'
 }
