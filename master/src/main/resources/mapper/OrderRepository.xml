@@ -16,7 +16,6 @@
         <result column="orderState" property="orderState"/>
         <result column="payState" property="payState"/>
         <result column="payType" property="payType"/>
-        <result column="tenantId" property="tenantId"/>
         <result column="deviceId" property="deviceId"/>
         <result column="deviceName" property="deviceName"/>
         <result column="deviceType" property="deviceType"/>
@@ -27,7 +26,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, productName, productId, price, wechatOrder, creationTime, creatorUserId, orderState, payState, tenantId, deviceId, deviceName, deviceType, pointName,payType,backNum,deviceNum,pointId
+        id, productName, productId, price, wechatOrder, creationTime, creatorUserId, orderState, payState, deviceId, deviceName, deviceType, pointName,payType,backNum,deviceNum,pointId
     </sql>
     <update id="updateOrderState">
         update sale_order
@@ -48,7 +47,7 @@
         SELECT
         SUM( price ) AS sale,
         COUNT( productId ) AS count,
-        ( SELECT COUNT( 1 ) FROM sale_device  where  tenantId=1
+        ( SELECT COUNT( 1 ) FROM sale_device
         ) AS device,
         ( SELECT COUNT( 1 ) FROM sale_log
         <where>
@@ -62,7 +61,7 @@
         ) AS error,
         ( SELECT COUNT( 1 ) FROM sale_order
         <where>
-            ( payState =2 OR orderState =- 1 ) and tenantId=1
+            ( payState =2 OR orderState =- 1 )
             <if test="start!=null">
                 and creationTime >= #{start}
             </if>

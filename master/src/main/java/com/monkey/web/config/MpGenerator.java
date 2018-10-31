@@ -58,7 +58,7 @@ public class MpGenerator {
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("Dizhu2017");
-        dsc.setUrl("jdbc:mysql://103.45.8.198:3306/sale?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC");
+        dsc.setUrl("jdbc:mysql://103.45.8.198:3306/dryer?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC");
         mpg.setDataSource(dsc);
 
         // 策略配置

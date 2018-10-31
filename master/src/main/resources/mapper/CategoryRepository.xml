@@ -8,12 +8,11 @@
         <result column="name" property="name" />
         <result column="creationTime" property="creationTime" />
         <result column="creatorUserId" property="creatorUserId" />
-        <result column="tenantId" property="tenantId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, creationTime, creatorUserId, tenantId
+        id, name, creationTime, creatorUserId
     </sql>
 
 </mapper>

@@ -79,14 +79,14 @@ export const appRouters: Array<any> = [
         permission: "point:list",
         name: "point",
         component: () => System.import("../views/points/index.vue")
-      },
-      {
-        path: "pointshow",
-        meta: { title: "点位展示" },
-        permission: "point:list",
-        name: "pointshow",
-        component: () => System.import("../views/points/show.vue")
       }
+      // , {
+      //   path: "pointshow",
+      //   meta: { title: "点位展示" },
+      //   permission: "point:list",
+      //   name: "pointshow",
+      //   component: () => System.import("../views/points/show.vue")
+      // }
     ]
   },
   {
@@ -120,6 +120,44 @@ export const appRouters: Array<any> = [
         permission: "product:list",
         name: "pl",
         component: () => System.import("../views/products/index.vue")
+      },
+      {
+        path: "door",
+        meta: { title: "上门管理" },
+        permission: "door:list",
+        name: "pd",
+        component: () => System.import("../views/products/door.vue")
+      }
+    ]
+  },
+  {
+    path: "/operation",
+    name: "operation",
+    meta: { title: "运维管理" },
+    permission: "operation:show",
+    icon: "&#xeafc;",
+    component: () => System.import("../views/main.vue"),
+    children: [
+      {
+        path: "staff",
+        meta: { title: "运维人员管理" },
+        permission: "staff:list",
+        name: "opestaff",
+        component: () => System.import("../views/operation/staff.vue")
+      },
+      {
+        path: "pickup",
+        meta: { title: "上门取货" },
+        permission: "pickup:list",
+        name: "opepickup",
+        component: () => System.import("../views/operation/pickup.vue")
+      },
+      {
+        path: "allow",
+        meta: { title: "运维人员分配" },
+        permission: "allow:list",
+        name: "opeallow",
+        component: () => System.import("../views/operation/allow.vue")
       }
     ]
   },
@@ -251,13 +289,6 @@ export const appRouters: Array<any> = [
         meta: { title: "商品分类管理" },
         name: "category",
         component: () => System.import("../views/setting/category/index.vue")
-      },
-      {
-        path: "tenant",
-        permission: "tenant:list",
-        meta: { title: "运营商管理" },
-        name: "tenant",
-        component: () => System.import("../views/setting/tenant/index.vue")
       }
     ]
   }

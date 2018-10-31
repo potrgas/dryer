@@ -18,12 +18,7 @@ import java.util.List;
  */
 public interface IUserService extends IService<User> {
 
-    /**
-     * 根据用户名查询用户
-     *
-     * @return 用户
-     */
-    User login(String tenantName,String account);
+
     /**
      * <p>
      * 注册

@@ -5,7 +5,7 @@
         <div class="header">
           <a>
             <img class="logo"/>
-            <span class="title">应用名称</span>
+            <span class="title">烘干机</span>
           </a>
         </div>
         <div class="desc">
@@ -56,7 +56,7 @@ import AbpBase from "../lib/abpbase";
 export default class Login extends AbpBase {
   loginModel = {
     userName: "admin",
-    password: "1234567",
+    password: "Welcome!@#",
     rememberMe: false
   };
   async login() {

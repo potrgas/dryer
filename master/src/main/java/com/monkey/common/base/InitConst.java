@@ -55,6 +55,12 @@ public interface InitConst {
                     add(new MenuInfo("批量删除商品", PermissionConst._products._product.batch, "", 2, null));
                     add(new MenuInfo("获取详情", PermissionConst._products._product.first, "", 2, null));
                 }}));
+                add(new MenuInfo("上门", PermissionConst._products._door.list, "/product/door", 1, new ArrayList<MenuInfo>() {{
+                    add(new MenuInfo("编辑商品", PermissionConst._products._door.modify, "", 2, null));
+                    add(new MenuInfo("删除商品", PermissionConst._products._door.delete, "", 2, null));
+                    add(new MenuInfo("批量删除商品", PermissionConst._products._door.batch, "", 2, null));
+                    add(new MenuInfo("获取详情", PermissionConst._products._door.first, "", 2, null));
+                }}));
             }}));
             add(new MenuInfo("支付配置", PermissionConst._paySetting.list, "", 1, new ArrayList<MenuInfo>() {{
                 add(new MenuInfo("支付设置", PermissionConst._paySetting._pay.first, "/pay/alipay", 1, new ArrayList<MenuInfo>() {{
@@ -83,6 +89,11 @@ public interface InitConst {
                 add(new MenuInfo("设备备货信息", PermissionConst._report._deviceget.list, "/watch/dgp", 1, null));
                 add(new MenuInfo("设备故障记录", PermissionConst._report._devicewarn.list, "/watch/de", 1, null));
                 add(new MenuInfo("设备故障率", PermissionConst._report._devicewarnper.list, "/watch/dep", 1, null));
+            }}));
+            add(new MenuInfo("运维系统", PermissionConst._operation.list, "", 1, new ArrayList<MenuInfo>() {{
+                add(new MenuInfo("运维人员管理", PermissionConst._operation._staff.list, "/operation/staff", 1, null));
+                add(new MenuInfo("上门取货", PermissionConst._operation._pickup.list, "/operation/pickup", 1, null));
+                add(new MenuInfo("运维人员分配", PermissionConst._operation._allow.list, "/operation/allow", 1, null));
             }}));
 
             add(new MenuInfo("系统管理", PermissionConst._system.list, "", 1, new ArrayList<MenuInfo>() {{
