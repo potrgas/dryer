@@ -1,6 +1,5 @@
 package com.dryer.xull.http;
 
-import com.dfhe.bean.IncreaseMemberEditBean;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
@@ -9,7 +8,6 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Observable;
 import java.util.Set;
 
 import okhttp3.MediaType;

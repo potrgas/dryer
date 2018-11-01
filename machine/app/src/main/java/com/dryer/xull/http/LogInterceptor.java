@@ -59,6 +59,8 @@ public class LogInterceptor implements Interceptor {
 //            requestBuilder.header("Authorization", "Bearer "+ DfhePreference.getToken());
 //            Log.e("Authorization","Bearer "+ DfhePreference.getToken());
 //        }
+        requestBuilder.header("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NDExNjMzNDYsInVzZXJJZCI6NSwidXNlcm5hbWUiOiJhZG1pbiJ9.-ETHv171V7MZ7CABkUXaOrFMr10cYr3jxiZc-dR0TVg");
+
         Request newRequest=requestBuilder.build();
         Response response = chain.proceed(newRequest);
 

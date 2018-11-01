@@ -61,8 +61,8 @@ public class HttpTaskUtils {
     /**
      * 登录
      */
-    public void login(Subscriber<ResponseBody>subscriber, RequestBody jsonParams){
-        SetObservable(myService.login(jsonParams),subscriber);
+    public void device(Subscriber<ResponseBody>subscriber, RequestBody jsonParams){
+        SetObservable(myService.device(jsonParams),subscriber);
     }
     /**
      * 文件上传

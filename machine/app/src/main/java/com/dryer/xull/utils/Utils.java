@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class Utils {
     //获取手机的唯一标识
-    public String getPhoneSign() {
+    public static String getPhoneSign() {
         StringBuilder deviceId = new StringBuilder();
         // 渠道标志
         deviceId.append("a");
@@ -49,8 +49,8 @@ public class Utils {
     /**
      * 得到全局唯一UUID
      */
-    private String uuid;
-    public String getUUID(){
+    private static String uuid;
+     public static String getUUID(){
         uuid = GjPreference.getDeviceId();
         if(TextUtils.isEmpty(uuid)){
             uuid = UUID.randomUUID().toString();

@@ -24,7 +24,9 @@ public class SocketService extends Service {
      * 心跳检测时间
      */
     private static final long HEART_BEAT_RATE = 15 * 1000;//每隔15秒进行一次对长连接的心跳检测
-    public  static  String WEBSOCKET_HOST_AND_PORT ;//可替换为自己的主机名和端口号
+    //public  static  String WEBSOCKET_HOST_AND_PORT ="wss://dryerservice.leftins.com/1111";//可替换为自己的主机名和端口号
+    public  static  String WEBSOCKET_HOST_AND_PORT ="ws://192.168.0.107:8080/JavaWebSocket/websocket";//可替换为自己的主机名和端口号
+
     private WebSocket mWebSocket;
     //创建线程池，
     ExecutorService writeExecutor = Executors.newSingleThreadExecutor();
@@ -52,12 +54,14 @@ public class SocketService extends Service {
     }
     // 初始化socket
     private void initSocket() throws UnknownHostException, IOException {
+        Log.e("ssssss","initSocket====================");
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(1, TimeUnit.MINUTES).build();
         Request request = new Request.Builder().url(WEBSOCKET_HOST_AND_PORT).build();
         client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
                 super.onOpen(webSocket, response);
+                Log.e("ssssss","onOpen====================");
                 mWebSocket=webSocket;
                 //建立连接成功后，发送消息给服务器端
                 writeExecutor.execute(new Runnable() {
@@ -84,17 +88,22 @@ public class SocketService extends Service {
             @Override
             public void onClosing(WebSocket webSocket, int code, String reason) {
                 super.onClosing(webSocket, code, reason);
+                Log.e("ssssss","onClosing====================");
             }
 
             @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
                 super.onClosed(webSocket, code, reason);
                 writeExecutor.shutdown();
+                Log.e("ssssss","onClosed====================");
+
             }
 
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                 super.onFailure(webSocket, t, response);
+                Log.e("ssssss","onFailure=======");
+
             }
         });
         client.dispatcher().executorService().shutdown();
@@ -109,6 +118,9 @@ public class SocketService extends Service {
         @Override
         public void run() {
             if (System.currentTimeMillis() - sendTime >= HEART_BEAT_RATE) {
+                if(mWebSocket==null){
+                    return;
+                }
                 boolean isSuccess = mWebSocket.send("");//发送一个空消息给服务器，通过发送消息的成功失败来判断长连接的连接状态
                 if (!isSuccess) {//长连接已断开
                     mHandler.removeCallbacks(heartBeatRunnable);

@@ -66,16 +66,18 @@ public class OnSuccessAndFailSub extends Subscriber<ResponseBody> {
     @Override
     public void onNext(ResponseBody body) {
         try {
-            final String result = body.string();
+            String result = body.string();
             Logger.e(result);
-            JSONObject jsonObject = new JSONObject(result);
-            int resultCode = jsonObject.optInt("success");
-            if (resultCode>0){
-                callBack.OnSuccessResult(requestCode,result);
-            } else {
-                String errorMsg = jsonObject.getString("error");
-                callBack.OnFailResult(requestCode,errorMsg);
-            }
+//            JSONObject jsonObject = new JSONObject(result);
+//            int resultCode = jsonObject.optInt("success");
+            callBack.OnSuccessResult(requestCode,result);
+//            if (resultCode>0){
+//                callBack.OnSuccessResult(requestCode,result);
+//            }
+//            else {
+//                String errorMsg = jsonObject.getString("error");
+//                callBack.OnFailResult(requestCode,errorMsg);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             Logger.e("JSON解析出错");

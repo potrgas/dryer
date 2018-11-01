@@ -10,12 +10,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dryer.xull.activity.TestActivity;
+import com.dryer.xull.http.HttpTaskUtils;
+import com.dryer.xull.http.OnSuccessAndFailSub;
+import com.dryer.xull.http.ParamsUtils;
+import com.dryer.xull.service.SocketService;
+import com.dryer.xull.utils.Utils;
 import com.google.zxing.WriterException;
 import com.yzq.zxinglibrary.encode.CodeCreator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.RequestBody;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        getDeviceCode();
+        startService(new Intent(this, SocketService.class));
     }
 
     @OnClick(R.id.iv_setting)
@@ -64,9 +75,32 @@ public class MainActivity extends AppCompatActivity {
         } catch (WriterException e) {
             e.printStackTrace();
         }
+
     }
 
+    //获取设备编号
+    public void getDeviceCode(){
+        Map<String, String> params = new HashMap<>();
+        params.put("deviceName", Utils.getPhoneSign());
+        params.put("deviceNum", Utils.getPhoneSign());
+        RequestBody requestBody = ParamsUtils.paramsObjectToRequestBody(params);
+        HttpTaskUtils.getInstence().device(new OnSuccessAndFailSub(1,
+                new OnSuccessAndFailSub.OnHttpResquestCallBack() {
+                    @Override
+                    public void OnSuccessResult(int requestCode, String data) {
 
+                    }
+
+                    @Override
+                    public void OnFailResult(int requestCode, String errorMsg) {
+
+                    }
+                }), requestBody);
+
+
+
+
+    }
 
 
 

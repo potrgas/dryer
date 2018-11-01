@@ -98,6 +98,6 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onLockerOutputStream(OutputStream outputStream) {
         this.mOutputStream=outputStream;
-        portPrinterBase=new PortPrinterBase(outputStream,"1");
+        portPrinterBase=new PortPrinterBase(outputStream);
     }
 }

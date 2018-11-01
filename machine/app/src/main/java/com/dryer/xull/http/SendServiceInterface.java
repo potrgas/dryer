@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -19,10 +20,10 @@ import rx.Observable;
 
 public interface SendServiceInterface {
     /**
-     * 登录
+     * 注册设备号
      */
-    @POST("api/account/login")
-    Observable<ResponseBody>login(@Body RequestBody jsonParams);
+    @PUT("api/device")
+    Observable<ResponseBody>device(@Body RequestBody jsonParams);
 
     /**
      * 文件上传
