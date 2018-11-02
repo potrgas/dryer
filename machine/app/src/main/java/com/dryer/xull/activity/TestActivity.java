@@ -14,6 +14,7 @@ import com.dryer.xull.utils.OnSerialPortCallback;
 import com.dryer.xull.utils.PortPrinterBase;
 
 import java.io.OutputStream;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -93,6 +94,11 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         if(onSerialPortCallback!=null){
             onSerialPortCallback.onCallBack(buffer,size);
         }
+    }
+
+    @Override
+    public void onLockerDataReceived(List<Byte> data) {
+
     }
 
     @Override

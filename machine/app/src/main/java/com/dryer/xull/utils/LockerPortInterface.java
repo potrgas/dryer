@@ -1,6 +1,7 @@
 package com.dryer.xull.utils;
 
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * @author fanming
@@ -14,7 +15,7 @@ public interface LockerPortInterface {
      * @param path    串口名，如果有多个串口需要识别是哪个串口返回的数据（传或不传可以根据自己的编码习惯）
      */
     void onLockerDataReceived(final byte[] buffer, final int size, final String path);
-
+    void onLockerDataReceived(List<Byte> data);
     /**
      * 串口输出流，通过该输出流向串口发送指令
      * @param outputStream

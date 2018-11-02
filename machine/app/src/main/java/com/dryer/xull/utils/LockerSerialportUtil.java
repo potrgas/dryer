@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android_serialport_api.SerialPort;
 
@@ -141,6 +143,7 @@ public class LockerSerialportUtil {
      * @author fanming
      *
      */
+    List<Byte> list =new ArrayList<Byte>();
     private class ReadThreadBox extends Thread {
         @Override
         public void run() {
@@ -148,15 +151,26 @@ public class LockerSerialportUtil {
             while (boxFlag) {
                 int size;
                 try {
-                    byte[] buffer = new byte[64];
+                    byte[] buffer = new byte[1024];
                     if (mInputStreamBox == null) return;
                     /* read会一直等待数据，如果要判断是否接受完成，只有设置结束标识，或作其他特殊的处理 */
                     //Log.i("SerialPort", mReadThreadBox.getName() + "---locker port------读取中");
                     size = mInputStreamBox.read(buffer);
-//                    sendMessage();
-                    if (size > 0) {
-                        sportInterface.onLockerDataReceived(buffer, size,path);
+                    for(int i=0;i<size;i++){
+                        list.add(buffer[i]);
                     }
+                    if(list.size()>2&&list.get(list.size()-2)==0x0D&&list.get(list.size()-1)==0x0A){
+                        List<Byte>data=new ArrayList<>();
+                        data.addAll(list);
+                        list.clear();
+                        sportInterface.onLockerDataReceived(data);
+                    }
+
+//
+//
+//                    if (size > 0) {
+//                        sportInterface.onLockerDataReceived(buffer, size,path);
+//                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
