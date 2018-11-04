@@ -5,6 +5,7 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.monkey.application.Payfor.IOrderService;
 import com.monkey.application.Payfor.ISerialService;
+import com.monkey.common.base.SocketConstant;
 import com.monkey.common.util.CipherTextUtil;
 import com.monkey.common.wechatsdk.XMLUtil4jdom;
 import com.monkey.core.entity.Order;
@@ -31,6 +32,7 @@ public class NotifyController {
     IOrderService _orderService;
     @Autowired
     ISerialService _serialService;
+
     private SortedMap<Object, Object> getparams(Map<String, String> m) {
         //过滤空 设置 TreeMap
         SortedMap<Object, Object> packageParams = new TreeMap<Object, Object>();
@@ -46,8 +48,9 @@ public class NotifyController {
         }
         return packageParams;
     }
+
     ///插入流水表
-    private void insertSerial(Order order,Integer type,String backOrder) {
+    private void insertSerial(Order order, Integer type, String backOrder) {
         Serial s = new Serial();
         s.setDeviceId(order.getDeviceId());
         s.setDeviceName(order.getDeviceName());
@@ -62,6 +65,7 @@ public class NotifyController {
         s.setBackOrder(backOrder);
         _serialService.insert(s);
     }
+
     @RequestMapping(value = "/back")
     public void weixin_back(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("调用退款回调方法");
@@ -92,7 +96,7 @@ public class NotifyController {
             String appId = packageParams.get("appid").toString();
             String mch_id = packageParams.get("mch_id").toString();
             Payfor p = _orderService.getPayforByOrder(appId, mch_id);
-            if(p==null||p.getAlipayAgent().isEmpty()){
+            if (p == null || p.getAlipayAgent().isEmpty()) {
                 resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
                         + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
                 BufferedOutputStream out = new BufferedOutputStream(
@@ -112,13 +116,13 @@ public class NotifyController {
                 // 这里是退款成功
                 String out_trade_no = (String) packageParams.get("out_trade_no");
                 String back_id = (String) packageParams.get("out_refund_no");
-                EntityWrapper e=new EntityWrapper();
-                e.eq("wechatOrder",out_trade_no);
-                Order o= _orderService.selectOne(e);
+                EntityWrapper e = new EntityWrapper();
+                e.eq("wechatOrder", out_trade_no);
+                Order o = _orderService.selectOne(e);
                 //////////更新订单信息////////////////
                 _orderService.updateOrderStatte(out_trade_no, null, 2, back_id);
 
-                insertSerial(o,2,back_id);
+                insertSerial(o, 2, back_id);
                 // 向微信服务器发送确认信息，若不发送，微信服务器会间隔不同的时间调用回调方法
                 BufferedOutputStream out = new BufferedOutputStream(
                         response.getOutputStream());
@@ -128,7 +132,7 @@ public class NotifyController {
                 out.flush();
                 out.close();
                 System.out.println("通知微信.异步确认成功");
-            }else{
+            } else {
                 resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
                         + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
                 BufferedOutputStream out = new BufferedOutputStream(
@@ -192,17 +196,17 @@ public class NotifyController {
                 String transaction_id = (String) packageParams.get("transaction_id");
 
                 //////////执行自己的业务逻辑（报存订单信息到数据库）////////////////
-                EntityWrapper e=new EntityWrapper();
-                e.eq("wechatOrder",out_trade_no);
-                Order o= _orderService.selectOne(e);
-                if(o!=null){
+                EntityWrapper e = new EntityWrapper();
+                e.eq("wechatOrder", out_trade_no);
+                Order o = _orderService.selectOne(e);
+                if (o != null) {
                     _orderService.updateOrderStatte(out_trade_no, null, 1, null);
-                    insertSerial(o,1,"");
+                    insertSerial(o, 1, "");
                     ///////////通知客户端修改状态/////////
                     String did = out_trade_no.split("_")[0];
                     WebSocketServer ws = WebSocketServer.getClient(did);
                     if (ws != null) {
-                        WebSocketMessage mm = new WebSocketMessage(did, out_trade_no, "支付成功", 2, true);
+                        WebSocketMessage mm = new WebSocketMessage(did, "支付成功", SocketConstant.BUSINESS);
                         ws.sendMessageTo(mm);
 
                         // 向微信服务器发送确认信息，若不发送，微信服务器会间隔不同的时间调用回调方法
@@ -214,9 +218,7 @@ public class NotifyController {
                         out.flush();
                         out.close();
                         System.out.println("通知微信.异步确认成功");
-                }
-
-
+                    }
 
 
                 }
@@ -234,15 +236,15 @@ public class NotifyController {
         } else {
         }
     }
+
     /**
      * 支付宝支付回调
-     * @Author 小柒
+     *
      * @param request
      * @param response
-     * @throws Exception
-     * void
+     * @throws Exception void
+     * @Author 小柒
      * @Date 2016年10月31日 更新日志 2016年10月31日 小柒 首次创建
-     *
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/alinotify")
@@ -259,7 +261,7 @@ public class NotifyController {
 
         String appId = params.get("app_id").toString();
         Payfor p = _orderService.getPayforByAppId(appId);
-        if(p==null||p.getAlipayAgent().isEmpty()){
+        if (p == null || p.getAlipayAgent().isEmpty()) {
             BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
             out.write("failed".getBytes());
             out.flush();
@@ -279,7 +281,7 @@ public class NotifyController {
             if (!p.getAlipayId().equals(params.get("app_id"))) {
                 System.out.println("验证签名成功s");
                 message = "failed";
-            }else{
+            } else {
                 String outtradeno = params.get("out_trade_no");
                 System.out.println(outtradeno + "号订单回调通知。");
 //在数据库中查找订单号对应的订单，并将其金额与数据库中的金额对比，若对不上，也为异常通知
@@ -290,11 +292,11 @@ public class NotifyController {
 
                 } else if (status.equals("TRADE_SUCCESS") || status.equals("TRADE_FINISHED")) {
                     // 如果状态是已经支付成功成功 更新状态
-                    _orderService.updateOrderStatte(outtradeno,null,1,"");
-                    EntityWrapper e=new EntityWrapper();
-                    e.eq("wechatOrder",outtradeno);
-                    Order o= _orderService.selectOne(e);
-                    insertSerial(o,1,"");
+                    _orderService.updateOrderStatte(outtradeno, null, 1, "");
+                    EntityWrapper e = new EntityWrapper();
+                    e.eq("wechatOrder", outtradeno);
+                    Order o = _orderService.selectOne(e);
+                    insertSerial(o, 1, "");
                 }
                 System.out.println(outtradeno + "订单的状态已经修改为" + status);
             }

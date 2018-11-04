@@ -1,13 +1,9 @@
 package com.monkey.web.aspect;
 
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -19,12 +15,11 @@ import javax.websocket.server.ServerEndpoint;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.monkey.application.Payfor.IOrderService;
+import com.monkey.common.base.SocketConstant;
 import com.monkey.web.config.SpringContextBean;
 import com.monkey.web.controller.dtos.WebSocketMessage;
-import org.apache.commons.collections.map.CompositeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import springfox.documentation.spring.web.json.Json;
 
 @ServerEndpoint(value = "/websocket/{clientId}")
 @Component
@@ -40,7 +35,8 @@ public class WebSocketServer {
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
     private String clientId;
-
+    //状态
+    private Boolean state;
     /**
      * 连接建立成功调用的方法
      */
@@ -48,11 +44,12 @@ public class WebSocketServer {
     public void onOpen(Session session, @PathParam("clientId") String clientId) {
         this.session = session;
         this.clientId = clientId;
+        this.state=true;
         clients.put(this.clientId, this);     //加入set中
         clientsState.put(this.clientId, 1);
         addOnlineCount();           //在线数加1
         try {
-            WebSocketMessage m = new WebSocketMessage(this.clientId, "", "链接服务器成功", 1, true);
+            WebSocketMessage m = new WebSocketMessage(this.clientId,"success",  SocketConstant.HEART);
             sendMessageTo(m);
         } catch (IOException e) {
         }
@@ -87,14 +84,22 @@ public class WebSocketServer {
         JSONObject jsonTo = JSONObject.parseObject(message);
         String order = (String) jsonTo.get("order");
         Integer type = (Integer) jsonTo.get("type");
-        if (type == 4) {
-            _orderService.updateOrderStatte(order, 1, null, null);
+
+        if (type == SocketConstant.HEART.type) {
+           Heart();
         }
-        WebSocketMessage m = new WebSocketMessage(this.clientId, order, "出货状态修改成功", 4, true);
+
+        WebSocketMessage m = new WebSocketMessage(this.clientId,"json",SocketConstant.BUSINESS);
         sendMessageTo(m);
 
     }
+    private void  Heart(){
+        WebSocketServer ws=clients.get(this.clientId);
+        if(!ws.state){
+            ws.state=true;
+        }
 
+    }
     /**
      * @param session
      * @param error
