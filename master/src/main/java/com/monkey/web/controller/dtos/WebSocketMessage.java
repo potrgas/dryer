@@ -1,16 +1,18 @@
 package com.monkey.web.controller.dtos;
+
+import com.monkey.common.base.SocketConstant;
+
 public class WebSocketMessage {
-    public WebSocketMessage(){}
-    public WebSocketMessage(String to, String order, String message, Integer type, Boolean state){
-        this.to=to;
-        this.message=message;
-        this.order=order;
-        this.type=type;
-        this.state=state;
+    public WebSocketMessage() {
     }
+
+    public WebSocketMessage(String to, String data, SocketConstant type) {
+        this.to = to;
+        this.type = type;
+        this.data = data;
+    }
+
     public String to;
-    public  String order;
-    public  Integer type;
-    public Boolean state;
-    public  String message;
+    public String data;
+    public SocketConstant type;
 }
