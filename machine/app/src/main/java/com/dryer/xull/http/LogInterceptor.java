@@ -59,7 +59,7 @@ public class LogInterceptor implements Interceptor {
 //            requestBuilder.header("Authorization", "Bearer "+ DfhePreference.getToken());
 //            Log.e("Authorization","Bearer "+ DfhePreference.getToken());
 //        }
-        requestBuilder.header("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NDExNjMzNDYsInVzZXJJZCI6NSwidXNlcm5hbWUiOiJhZG1pbiJ9.-ETHv171V7MZ7CABkUXaOrFMr10cYr3jxiZc-dR0TVg");
+        requestBuilder.header("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NDEzOTcyNzYsInVzZXJJZCI6NSwidXNlcm5hbWUiOiJhZG1pbiJ9.HqKTWVzcSdB41_tFi700B_fhS2snADlSfc28G3GWe74");
 
         Request newRequest=requestBuilder.build();
         Response response = chain.proceed(newRequest);

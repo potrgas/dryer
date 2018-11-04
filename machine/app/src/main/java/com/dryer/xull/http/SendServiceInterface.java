@@ -22,7 +22,7 @@ public interface SendServiceInterface {
     /**
      * 注册设备号
      */
-    @PUT("api/device")
+    @PUT("api/device/register")
     Observable<ResponseBody>device(@Body RequestBody jsonParams);
 
     /**
