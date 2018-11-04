@@ -6,8 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -16,7 +21,9 @@ import com.dryer.xull.http.HttpTaskUtils;
 import com.dryer.xull.http.OnSuccessAndFailSub;
 import com.dryer.xull.http.ParamsUtils;
 import com.dryer.xull.service.SocketService;
+import com.dryer.xull.utils.ScreenUtil;
 import com.dryer.xull.utils.Utils;
+import com.dryer.xull.view.DialogUtils;
 import com.dryer.xull.view.TipDialog;
 
 import java.util.HashMap;
@@ -58,6 +65,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Bind(R.id.iv_video_start)
     ImageView ivVideoStart;
     TipDialog tipDialog;
+    @Bind(R.id.iv_start_dry)
+    ImageView ivStartDry;
+    @Bind(R.id.iv_setting)
+    ImageView ivSetting;
+    @Bind(R.id.bootView)
+    LinearLayout bootView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rlTab3.setOnClickListener(this);
         ivVideoStart.setOnClickListener(this);
         ivMain1.setOnClickListener(this);
-
+        ivStartDry.setOnClickListener(this);
+        Log.e("ssss", ScreenUtil.getScreenWidth()+"===="+ScreenUtil.getScreenHeight());
     }
 
 //    @OnClick(R.id.iv_setting)
@@ -174,12 +189,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.iv_main_1:
                 showDialog();
                 break;
+            case R.id.iv_start_dry:
+                showPopup();
+                break;
         }
     }
-    public void showDialog(){
-        if(tipDialog==null){
-            tipDialog=new TipDialog(this);
+
+    public void showDialog() {
+        if (tipDialog == null) {
+            tipDialog = new TipDialog(this);
         }
         tipDialog.show();
+    }
+
+    PopupWindow pop;
+
+    public void showPopup() {
+        if (pop == null) {
+            pop = DialogUtils.createPopupWindow_xull(this, new DialogUtils.OnPopupClickListener() {
+                @Override
+                public void onPopupClick(int position,int index) {
+                    if (pop != null) {
+                        if (DialogUtils.ll_popup_ != null) {
+                            DialogUtils.ll_popup_.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.activity_translate_out));
+                        }
+                        pop.dismiss();
+                    }
+                    switch (position) {
+                        case 1:
+
+                            break;
+                    }
+
+                }
+            });
+        }
+        if (DialogUtils.ll_popup_ != null) {
+            DialogUtils.ll_popup_.startAnimation(AnimationUtils.loadAnimation(this, R.anim.activity_translate_in));
+        }
+        pop.showAtLocation(bootView, Gravity.BOTTOM, 0, 0);
     }
 }

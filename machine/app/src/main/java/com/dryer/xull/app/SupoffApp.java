@@ -22,6 +22,7 @@ public class SupoffApp extends Application {
 		super.onCreate();
 		appContext = this.getApplicationContext();
 
+
 	}
 
 }
