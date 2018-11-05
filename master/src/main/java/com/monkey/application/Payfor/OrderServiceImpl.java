@@ -9,7 +9,6 @@ import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.monkey.application.Device.IDeviceService;
 import com.monkey.common.util.DateUtil;
 import com.monkey.common.wechatsdk.HttpUtil;
@@ -65,21 +64,23 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
      * 创建订单*/
     @Override
     public Order insertOrder(OrderInput input) throws Exception {
-        EntityWrapper ew = new EntityWrapper();
-        ew.eq("deviceNum", input.device);
-        Device d = _deviceService.selectOne(ew);
-        if (d == null) throw new Exception("该设备信息不存在");
-
         Order o = new Order();
         o.setPayType(input.payType);
-        o.setDeviceId(d.getId());
+        //  o.setDeviceId(d.getId());
         o.setOrderState(0);
         o.setPayState(0);
+        o.setAddress(input.address);
+        o.setArea(input.area);
+        o.setCommunity(input.community);
+        o.setCustomerName(input.customerName);
+        o.setDryType(input.dryType);
+        o.setIsTime(input.isTime);
+        o.setMobile(input.mobile);
+        o.setOpenId(input.openId);
         o.setPrice(input.payType == 1 ? input.price : input.price / 100);
         _orderRepository.insert(o);
         return o;
     }
-
     /*微信支付*/
     @Override
     public String weixinPay(Order input) throws Exception {

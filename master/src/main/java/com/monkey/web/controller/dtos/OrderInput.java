@@ -3,6 +3,7 @@ package com.monkey.web.controller.dtos;
 
 public class OrderInput {
     public Integer dryType;
+    public String openId;
     public Integer price;
     public String customerName;
     public String device;

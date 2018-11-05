@@ -69,54 +69,7 @@ public class OrderController {
         return new PublicResult<>(PublicResultConstant.SUCCESS, m);
     }
 
-    @Log(description = "订单接口:/客户下单操作")
-    @ApiOperation(value = "客户下单操作", notes = "订单列表")
-    @RequestMapping(value = "/make", method = RequestMethod.POST)
-    @RequiresPermissions(value = {PermissionConst._orders._order.list})
-    public PublicResult<Object> insert(@RequestBody OrderInput model) throws Exception {
-        try {
-            Order r = _orderService.insertOrder(model);
-            if (!r.getId().isEmpty()) {
-                String code = "";
-                if (model.payType==1) {
-                    code = _orderService.weixinPay(r);
-                } else {
-                    code = _orderService.aliPay(r);
-                }
-                if (!code.isEmpty()) {
-                    String url = QrCodeUtil.make(code);
-                    return new PublicResult<>(PublicResultConstant.SUCCESS, url);
-                }
-                return new PublicResult<>(PublicResultConstant.ERROR, "生成支付二维码失败");
-            }
-            return new PublicResult<>(PublicResultConstant.ERROR, r);
-        } catch (Exception e) {
-            return new PublicResult<>(PublicResultConstant.FAILED, e.getMessage());
-        }
-    }
 
-    @Log(description = "订单接口:/退款操作")
-    @ApiOperation(value = "退款操作", notes = "订单列表")
-    @RequestMapping(value = "/back/{orderId}", method = RequestMethod.GET)
-    @RequiresPermissions(value = {PermissionConst._orders._order.back})
-    public PublicResult<Object> back(@PathVariable String orderId) throws Exception {
-        try {
-            Order r = _orderService.selectById(orderId);
-            if (r != null) {
-                String result = "";
-                if (r.getPayType() == 1) {
-                    result = _orderService.weixinBack(r);
-                } else {
-                    result = _orderService.aliback(r);
-                }
-                if (result.isEmpty()) return new PublicResult<>(PublicResultConstant.FAILED, "退款申请请求失败");
-                return new PublicResult<>(PublicResultConstant.SUCCESS, "退款申请请求成功");
-            }
-            return new PublicResult<>(PublicResultConstant.ERROR, "暂无此订单信息");
-        } catch (Exception e) {
-            return new PublicResult<>(PublicResultConstant.FAILED, e.getMessage());
-        }
-    }
 
 }
 
