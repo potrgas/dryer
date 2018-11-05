@@ -1,4 +1,5 @@
 const state = {
-  userInfo: {}
+  userInfo: {},
+  order:{}
 }
 export default state

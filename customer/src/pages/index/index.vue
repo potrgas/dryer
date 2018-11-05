@@ -4,7 +4,7 @@
       <van-col span="16"><text class="textshow">选择待烘干织物种类</text> </van-col>
     </van-row>
     <van-row>
-      <van-radio-group :value="customer.radio">
+      <van-radio-group :value="customer.dryType">
         <van-cell-group>
           <van-cell title="纯棉" clickable data-name="1" @click="onSelectRadio">
             <van-radio name="1" />
@@ -25,8 +25,11 @@
     <van-row>
       <van-cell-group>
         <van-field :value="customer.name" required clearable label="姓名" placeholder="请输入姓名" />
-        <van-field :value="customer.mobile" required clearable label="联系电话" placeholder="请输入联系电话" />
-        <van-field :value="customer.address" required clearable label="取件地址" placeholder="请输入取件地址" />
+        <van-field :value="customer.mobile" required clearable label="电话" placeholder="电话" />
+        <van-field :value="customer.area" required clearable label="地区" placeholder="地区" />
+        <van-field :value="customer.community" required clearable label="小区" placeholder="小区" />
+        <van-area :area-list="areaList" />
+        <van-field :value="customer.address" required clearable label="取件地址" placeholder="取件地址" />
         <van-radio-group :value="customer.type">
           <van-cell title="剩余次数(4次)" clickable data-name="times" @click="onSelectType">
             <van-radio name="times" />
@@ -57,15 +60,18 @@
 <script>
 // Use Vuex
 import { mapMutations } from "vuex";
+import areaList from "../../utils/area";
 export default {
   data() {
     return {
       showBox: true,
       customer: {
-        radio: "1",
-        type: "paynow",
+        dryType: "1",
+        isTime: "paynow",
         name: "",
-        name: "",
+        area: "",
+        mobile:"",
+        community:"",
         address: ""
       },
       userInfo: {}
@@ -76,15 +82,18 @@ export default {
 
   methods: {
     ...mapMutations({
-      set_userInfo: "set_userinfo"
+      set_userInfo: "set_userinfo",
+      set_order: "set_order",
     }),
     gotopayfor() {
+      //todo vilidate
+      this.set_order(this.customer);
       wx.navigateTo({
         url: "../payfor/main"
       });
     },
     onSelectRadio(e) {
-      this.customer.radio = e.currentTarget.dataset.name;
+      this.customer.dryType = e.currentTarget.dataset.name;
     },
     onSelectType(e) {
       this.customer.type = e.currentTarget.dataset.name;
@@ -97,8 +106,6 @@ export default {
       var mo = source.target.userInfo;
       this.set_userInfo(mo);
       this.customer.name = mo.nickName;
-      this.customer.mobile = "1181651";
-      this.customer.address = mo.nickName;
     },
     bindViewTap() {
       const url = "../logs/main";
@@ -110,7 +117,9 @@ export default {
       console.log("clickHandle:", msg, ev);
     }
   },
-  created() {}
+  created() {
+
+  }
 };
 </script>
 

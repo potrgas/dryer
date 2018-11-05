@@ -9,7 +9,6 @@ import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.monkey.application.Device.IDeviceService;
 import com.monkey.common.util.DateUtil;
 import com.monkey.common.wechatsdk.HttpUtil;
@@ -60,41 +59,36 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
     @Autowired
     ISerialService _serialService;
     protected static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+
     /*
-    * 创建订单*/
+     * 创建订单*/
     @Override
     public Order insertOrder(OrderInput input) throws Exception {
-        EntityWrapper ew = new EntityWrapper();
-        ew.eq("deviceNum", input.deviceNum);
-        Device d = _deviceService.selectOne(ew);
-        if (d == null) throw new Exception("该设备信息不存在");
-        Product p = _productRepository.selectById(input.productId);
-        if (p == null) throw new Exception("该商品信息不存在");
         Order o = new Order();
-        o.setPayType(input.isWechatOrder?1:2);
-        o.setDeviceId(d.getId());
-        o.setDeviceNum(d.getDeviceNum());
-        o.setDeviceName(d.getDeviceName());
-        o.setDeviceType(d.getDeviceType());
+        o.setPayType(input.payType);
+        //  o.setDeviceId(d.getId());
         o.setOrderState(0);
-        o.setPointId(d.getPointId());
         o.setPayState(0);
-        o.setPrice(input.isWechatOrder?input.price:input.price/100);
-        o.setProductId(p.getId());
-        o.setProductName(p.getProductName());
-        o.setPointName(d.getPointName());
-        o.setWechatOrder(d.getDeviceNum() + "_" + System.currentTimeMillis());
+        o.setAddress(input.address);
+        o.setArea(input.area);
+        o.setCommunity(input.community);
+        o.setCustomerName(input.customerName);
+        o.setDryType(input.dryType);
+        o.setIsTime(input.isTime);
+        o.setMobile(input.mobile);
+        o.setOpenId(input.openId);
+        o.setPrice(input.payType == 1 ? input.price : input.price / 100);
         _orderRepository.insert(o);
         return o;
     }
-/*微信支付*/
+    /*微信支付*/
     @Override
     public String weixinPay(Order input) throws Exception {
         EntityWrapper ew = new EntityWrapper();
         List<Payfor> list = _payforRepository.selectList(ew);
         Payfor p = list.get(0);
         if (list.isEmpty() || p == null) throw new Exception("该商户支付信息不存在");
-        String out_trade_no = input.getWechatOrder(); //订单号 （调整为自己的生产逻辑）
+        String out_trade_no = input.getId(); //订单号 （调整为自己的生产逻辑）
         // 账号信息
         String appid = p.getWechatpayId();  // appid
         //String appsecret = PayConfigUtil.APP_SECRET; // appsecret
@@ -116,7 +110,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
         packageParams.put("appid", appid);
         packageParams.put("mch_id", mch_id);
         packageParams.put("nonce_str", nonce_str);
-        packageParams.put("body", input.getProductName());  //（调整为自己的名称）
+        packageParams.put("body", input.getDryType());  //（调整为自己的名称）
         packageParams.put("out_trade_no", out_trade_no);
         packageParams.put("total_fee", input.getPrice().toString()); //价格的单位为分
         packageParams.put("spbill_create_ip", spbill_create_ip);
@@ -137,23 +131,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
         return urlCode;
     }
 
-/*
-* 阿里云支付*/
+    /*
+     * 阿里云支付*/
     @Override
     public String aliPay(Order product) throws Exception {
         EntityWrapper ew = new EntityWrapper();
         List<Payfor> list = _payforRepository.selectList(ew);
         Payfor p = list.get(0);
         if (list.isEmpty() || p == null) throw new Exception("该商户支付信息不存在");
-        String out_trade_no = product.getWechatOrder(); //订单号 （调整为自己的生产逻辑）
+        String out_trade_no = product.getId(); //订单号 （调整为自己的生产逻辑）
 
         AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", p.getAlipayId(), p.getAlipayKey(),
                 "json", "UTF-8", p.getAlipayAgent(), "RSA2"); //获得初始化的AlipayClient
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();//创建API对应的request类
         Map<String, String> r = new HashMap<>();
-        r.put("out_trade_no", product.getWechatOrder());
+        r.put("out_trade_no", product.getId());
         r.put("total_amount", product.getPrice() + "");
-        r.put("subject", product.getProductName());
         r.put("store_id", "");
         r.put("timeout_express", "120m");
         String w = JSON.toJSONString(r);
@@ -164,73 +157,71 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
         //根据response中的结果继续业务逻辑处理
         return response.getQrCode();
     }
+
     /*
-    * 阿里云退款*/
+     * 阿里云退款*/
     @Override
-    public String  aliback(Order input)throws  Exception{
+    public String aliback(Order input) throws Exception {
         EntityWrapper ew = new EntityWrapper();
         List<Payfor> list = _payforRepository.selectList(ew);
         Payfor p = list.get(0);
         if (list.isEmpty() || p == null) throw new Exception("该商户支付信息不存在");
-        String out_trade_no = input.getWechatOrder(); //订单号 （调整为自己的生产逻辑）
+        String out_trade_no = input.getId(); //订单号 （调整为自己的生产逻辑）
 
         AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", p.getAlipayId(), p.getAlipayKey(),
                 "json", "UTF-8", p.getAlipayAgent(), "RSA2");
         //获得初始化的AlipayClient
         AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();//创建API对应的request类
         Map<String, String> r = new HashMap<>();
-        r.put("out_trade_no", input.getWechatOrder());
-        r.put("out_request_no", System.currentTimeMillis()+"");
-        r.put("refund_amount", input.getPrice()+"");
+        r.put("out_trade_no", input.getId());
+        r.put("out_request_no", System.currentTimeMillis() + "");
+        r.put("refund_amount", input.getPrice() + "");
         String w = JSON.toJSONString(r);
         request.setBizContent(w); //设置业务参数
-     //   request.setNotifyUrl(PayConfig.Alibackurl);
+        //   request.setNotifyUrl(PayConfig.Alibackurl);
         AlipayTradeRefundResponse response = alipayClient.execute(request);
         //通过alipayClient调用API，获得对应的response类
         System.out.print(response.getBody());
-       String to= response.getRefundFee();
-       if(!to.isEmpty()){
-           _orderRepository.updateOrderState(input.getWechatOrder(),null,2,response.getOutTradeNo());
-           insertSerial(input);
-       }
-       return  to;
+        String to = response.getRefundFee();
+        if (!to.isEmpty()) {
+            _orderRepository.updateOrderState(input.getId(), null, 2, response.getOutTradeNo());
+            insertSerial(input);
+        }
+        return to;
     }
+
     ///插入流水表
     private void insertSerial(Order order) {
         Serial s = new Serial();
         s.setDeviceId(order.getDeviceId());
-        s.setDeviceName(order.getDeviceName());
-        s.setOrder(order.getWechatOrder());
-        s.setPointId(order.getPointId());
-        s.setPointName(order.getPointName());
+        s.setOrder(order.getId());
         s.setPrice(order.getPrice());
         s.setType(1);
-        s.setProductId(order.getProductId());
-        s.setProductName(order.getProductName());
         s.setPrice(order.getPrice());
         s.setBackOrder("");
         _serialService.insert(s);
     }
+
     @Override
-    public Page<DeviceSaleStatical> getDeviceSaleStatical(Page<DeviceSaleStatical> page, StaticalInput input ) {
-        List<DeviceSaleStatical>  t=  _orderRepository.getDeviceSaleStatical(input.getTenantId(), page,input.deviceName,input.pointName,input.start,input.end);
-        return  page.setRecords(t);
+    public Page<DeviceSaleStatical> getDeviceSaleStatical(Page<DeviceSaleStatical> page, StaticalInput input) {
+        List<DeviceSaleStatical> t = _orderRepository.getDeviceSaleStatical(input.getTenantId(), page, input.deviceName, input.pointName, input.start, input.end);
+        return page.setRecords(t);
     }
 
     @Override
-    public Page<ProductSaleStatical> getProductSaleStatical(Page<ProductSaleStatical>  page, StaticalInput input) {
-        List<ProductSaleStatical>  t=  _orderRepository.getProductSaleStatical(input.getTenantId(),page,input.productName,input.deviceName,input.start,input.end);
+    public Page<ProductSaleStatical> getProductSaleStatical(Page<ProductSaleStatical> page, StaticalInput input) {
+        List<ProductSaleStatical> t = _orderRepository.getProductSaleStatical(input.getTenantId(), page, input.productName, input.deviceName, input.start, input.end);
         return page.setRecords(t);
     }
 
     @Override
     public Map<String, Object> getDashboard(Integer tenantId) {
         Map<String, Object> result = new HashMap<>();
-        List<SalePercentDto> dr = _orderRepository.getTodaySalePercent(tenantId,DateUtil.getStartTime(), DateUtil.getEndTime());
-        List<SalePercentDto> mr = _orderRepository.getMonthSalePercent(tenantId,DateUtil.getBeginDayOfMonth(), DateUtil.getEndDayOfMonth());
-        List<SalePercentDto> pr = _orderRepository.getPayTypePercent(tenantId,DateUtil.getBeginDayOfMonth(), DateUtil.getEndDayOfMonth());
-        List<SalePercentDto> topdr = _orderRepository.getPointSalePercent(tenantId,DateUtil.getStartTime(), DateUtil.getEndTime());
-        List<SalePercentDto> topmr = _orderRepository.getPointSalePercent(tenantId,DateUtil.getBeginDayOfMonth(), DateUtil.getEndDayOfMonth());
+        List<SalePercentDto> dr = _orderRepository.getTodaySalePercent(tenantId, DateUtil.getStartTime(), DateUtil.getEndTime());
+        List<SalePercentDto> mr = _orderRepository.getMonthSalePercent(tenantId, DateUtil.getBeginDayOfMonth(), DateUtil.getEndDayOfMonth());
+        List<SalePercentDto> pr = _orderRepository.getPayTypePercent(tenantId, DateUtil.getBeginDayOfMonth(), DateUtil.getEndDayOfMonth());
+        List<SalePercentDto> topdr = _orderRepository.getPointSalePercent(tenantId, DateUtil.getStartTime(), DateUtil.getEndTime());
+        List<SalePercentDto> topmr = _orderRepository.getPointSalePercent(tenantId, DateUtil.getBeginDayOfMonth(), DateUtil.getEndDayOfMonth());
         result.put("todaySale", getDayKeysAndValues(dr));
         result.put("monthSale", getMonthKeysAndValues(mr));
         result.put("payType", pr);
@@ -242,9 +233,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
     @Override
     public Map<String, Object> getStaticial(Integer tenantId, Date start, Date end) {
         Map<String, Object> result = new HashMap<>();
-        TodayStatical tr = _orderRepository.getOrderStatical(tenantId,DateUtil.getStartTime(), DateUtil.getEndTime());
-        TodayStatical mr = _orderRepository.getOrderStatical(tenantId,DateUtil.getStartTime(start), DateUtil.getEndTime(end));
-      Integer count=  WebSocketServer.getOnlineCount();
+        TodayStatical tr = _orderRepository.getOrderStatical(tenantId, DateUtil.getStartTime(), DateUtil.getEndTime());
+        TodayStatical mr = _orderRepository.getOrderStatical(tenantId, DateUtil.getStartTime(start), DateUtil.getEndTime(end));
+        Integer count = WebSocketServer.getOnlineCount();
         tr.setDevice(count);
         result.put("today", tr);
         result.put("month", mr);
@@ -267,15 +258,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
     }
 
     /*
-        * 微信退款功能
-        * */
+     * 微信退款功能
+     * */
     @Override
     public String weixinBack(Order input) throws Exception {
         EntityWrapper ew = new EntityWrapper();
         List<Payfor> list = _payforRepository.selectList(ew);
         Payfor p = list.get(0);
         if (list.isEmpty() || p == null) throw new Exception("该商户支付信息不存在");
-        String out_trade_no = input.getWechatOrder(); //订单号 （调整为自己的生产逻辑）
+        String out_trade_no = input.getId(); //订单号 （调整为自己的生产逻辑）
         // 账号信息
         String appid = p.getWechatpayId();  // appid
         String mch_id = p.getWechatpayAgent(); // 商业号
