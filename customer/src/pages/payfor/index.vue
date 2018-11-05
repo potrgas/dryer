@@ -8,7 +8,7 @@
     </van-row>
     <van-row>
       <van-col span="8" offset="8">
-        <van-button @click="payfor" type="primary">确认支付(10元)</van-button>
+        <van-button @click="payfor" type="primary">确认支付({{order.price}}元)</van-button>
       </van-col>
     </van-row>
   </div>
@@ -25,11 +25,7 @@
   } from "vuex";
   export default {
     data() {
-      return {
-        customer: {},
-        radio: "1",
-        userInfo: {}
-      };
+      return {};
     },
     computed: {
       ...mapGetters(["order"])
@@ -37,38 +33,20 @@
     components: {},
 
     methods: {
-      onClick(e) {
-        this.radio = e;
-        console.log(e);
-      },
-      onChange() {
-        console.log(2);
-      },
       //调用支付功能
       payfor() {
-
-      },
-      bindViewTap() {
-        const url = "../logs/main";
-        wx.navigateTo({
-          url
-        });
-      },
-
-      getUserInfo() {
-        // 调用登录接口
-        wx.login({
-          success: () => {
-            wx.getUserInfo({
-              success: res => {
-                this.userInfo = res.userInfo;
-              }
+        let params = {
+          url: "api/chat/make",
+          data: this.order
+        };
+        post(params).then(r => {
+          console.log(r);
+          if (r.data.result) {
+            wx.navigateTo({
+              url: "../payfor/main"
             });
           }
-        });
-      },
-      clickHandle(msg, ev) {
-        console.log("clickHandle:", msg, ev);
+        })
       }
     },
 
