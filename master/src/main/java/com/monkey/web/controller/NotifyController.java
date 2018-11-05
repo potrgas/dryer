@@ -53,15 +53,10 @@ public class NotifyController {
     private void insertSerial(Order order, Integer type, String backOrder) {
         Serial s = new Serial();
         s.setDeviceId(order.getDeviceId());
-        s.setDeviceName(order.getDeviceName());
-        s.setOrder(order.getWechatOrder());
-        s.setPointId(order.getPointId());
-        s.setPointName(order.getPointName());
-        s.setPrice(order.getPrice());
+        s.setOrder(order.getId());
+        s.setPrice(10);
         s.setType(type);
-        s.setProductId(order.getProductId());
-        s.setProductName(order.getProductName());
-        s.setPrice(order.getPrice());
+        s.setProductId(order.getDryType());
         s.setBackOrder(backOrder);
         _serialService.insert(s);
     }

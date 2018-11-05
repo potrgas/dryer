@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.FieldFill;
 import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
 
 /**
@@ -15,7 +16,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author zhaohejing
- * @since 2018-08-13
+ * @since 2018-11-05
  */
 @TableName("sale_order")
 public class Order extends Model<Order> {
@@ -23,41 +24,41 @@ public class Order extends Model<Order> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * key
+     * 主键
+     */
+    /**
+     * guid
      */
     @TableId(value = "id", type = IdType.UUID)
     private String id;
     /**
-     * 商品名
+     * 客户id
      */
-    private String productName;
+    private String openId;
     /**
-     * 商品id
+     * 烘干类型(纯棉 化纤 其他)
      */
-    private Integer productId;
-    private String deviceNum;
+    private Integer dryType;
     /**
-     * 价格
+     * 客户姓名
      */
-    private Integer price;
+    private String customerName;
     /**
-     * 微信订单
+     * 手机
      */
-    private String wechatOrder;
-    private String backNum;
+    private String mobile;
     /**
-     * 创建时间
+     * 地区
      */
-    @TableField(fill = FieldFill.INSERT)
-    private Date creationTime;
-    private  Integer pointId;
+    private String area;
     /**
-     * 创建人id
+     * 小区
      */
-    @TableField(fill = FieldFill.INSERT)
-    private Integer creatorUserId;
-
-    private Integer payType;
+    private String community;
+    /**
+     * 取件地址
+     */
+    private String address;
     /**
      * 订单状态
      */
@@ -66,23 +67,32 @@ public class Order extends Model<Order> {
      * 支付状态
      */
     private Integer payState;
-
     /**
      * 设备id
      */
     private Integer deviceId;
     /**
-     * 设备名
+     * 支付类型  微信 支付宝
      */
-    private String deviceName;
+    private Integer payType;
     /**
-     * 设备类型
+     * 是否次数支付
      */
-    private String deviceType;
+    private Integer isTime;
     /**
-     * 点位名
+     * 是否次数支付
      */
-    private String pointName;
+    private Integer price;
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Date creationTime;
+    /**
+     * 创建人id
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Integer creatorUserId;
 
 
     public String getId() {
@@ -93,52 +103,60 @@ public class Order extends Model<Order> {
         this.id = id;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
-    public Integer getProductId() {
-        return productId;
+    public Integer getDryType() {
+        return dryType;
     }
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
+    public void setDryType(Integer dryType) {
+        this.dryType = dryType;
     }
 
-    public Integer getPrice() {
-        return price;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
-    public String getWechatOrder() {
-        return wechatOrder;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setWechatOrder(String wechatOrder) {
-        this.wechatOrder = wechatOrder;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
-    public Date getCreationTime() {
-        return creationTime;
+    public String getArea() {
+        return area;
     }
 
-    public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
+    public void setArea(String area) {
+        this.area = area;
     }
 
-    public Integer getCreatorUserId() {
-        return creatorUserId;
+    public String getCommunity() {
+        return community;
     }
 
-    public void setCreatorUserId(Integer creatorUserId) {
-        this.creatorUserId = creatorUserId;
+    public void setCommunity(String community) {
+        this.community = community;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Integer getOrderState() {
@@ -157,8 +175,6 @@ public class Order extends Model<Order> {
         this.payState = payState;
     }
 
-
-
     public Integer getDeviceId() {
         return deviceId;
     }
@@ -167,28 +183,36 @@ public class Order extends Model<Order> {
         this.deviceId = deviceId;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public Integer getPayType() {
+        return payType;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public void setPayType(Integer payType) {
+        this.payType = payType;
     }
 
-    public String getDeviceType() {
-        return deviceType;
+    public Integer getIsTime() {
+        return isTime;
     }
 
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
+    public void setIsTime(Integer isTime) {
+        this.isTime = isTime;
     }
 
-    public String getPointName() {
-        return pointName;
+    public Date getCreationTime() {
+        return creationTime;
     }
 
-    public void setPointName(String pointName) {
-        this.pointName = pointName;
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public Integer getCreatorUserId() {
+        return creatorUserId;
+    }
+
+    public void setCreatorUserId(Integer creatorUserId) {
+        this.creatorUserId = creatorUserId;
     }
 
     @Override
@@ -200,50 +224,28 @@ public class Order extends Model<Order> {
     public String toString() {
         return "Order{" +
         "id=" + id +
-        ", productName=" + productName +
-        ", productId=" + productId +
-        ", price=" + price +
-        ", wechatOrder=" + wechatOrder +
-        ", creationTime=" + creationTime +
-        ", creatorUserId=" + creatorUserId +
+        ", openId=" + openId +
+        ", dryType=" + dryType +
+        ", customerName=" + customerName +
+        ", mobile=" + mobile +
+        ", area=" + area +
+        ", community=" + community +
+        ", address=" + address +
         ", orderState=" + orderState +
         ", payState=" + payState +
         ", deviceId=" + deviceId +
-        ", deviceName=" + deviceName +
-        ", deviceType=" + deviceType +
-        ", pointName=" + pointName +
+        ", payType=" + payType +
+        ", isTime=" + isTime +
+        ", creationTime=" + creationTime +
+        ", creatorUserId=" + creatorUserId +
         "}";
     }
 
-    public Integer getPayType() {
-        return payType;
+    public Integer getPrice() {
+        return price;
     }
 
-    public void setPayType(Integer payType) {
-        this.payType = payType;
-    }
-
-    public String getBackNum() {
-        return backNum;
-    }
-
-    public void setBackNum(String backNum) {
-        this.backNum = backNum;
-    }
-
-    public String getDeviceNum() {
-        return deviceNum;
-    }
-
-    public void setDeviceNum(String deviceNum) {
-        this.deviceNum = deviceNum;
-    }
-
-    public Integer getPointId() {
-        return pointId;
-    }
-
-    public void setPointId(Integer pointId) {
-        this.pointId = pointId;
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 }

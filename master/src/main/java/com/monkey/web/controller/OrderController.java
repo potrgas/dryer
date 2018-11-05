@@ -78,7 +78,7 @@ public class OrderController {
             Order r = _orderService.insertOrder(model);
             if (!r.getId().isEmpty()) {
                 String code = "";
-                if (model.isWechatOrder) {
+                if (model.payType==1) {
                     code = _orderService.weixinPay(r);
                 } else {
                     code = _orderService.aliPay(r);
