@@ -1,4 +1,4 @@
-import fly from 'flyconfig'
+import fly from './flyconfig'
 import qs from 'qs'
 
 import config from '@/configs/config'
