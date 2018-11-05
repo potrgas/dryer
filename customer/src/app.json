@@ -12,13 +12,13 @@
     "list": [{
       "pagePath": "pages/index/main",
       "text": "我要烘干",
-      "iconPath": "static/images/left.png",
-      "selectedIconPath": "static/images/left.png"
+      "iconPath": "static/images/g.png",
+      "selectedIconPath": "static/images/g1.png"
     }, {
       "pagePath": "pages/my/main",
       "text": "我的",
-      "iconPath": "static/images/right.png",
-      "selectedIconPath": "static/images/right.png"
+      "iconPath": "static/images/my.png",
+      "selectedIconPath": "static/images/my-s.png"
     }]
   },
   "window": {

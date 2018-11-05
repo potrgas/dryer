@@ -12,7 +12,13 @@ import java.util.Set;
  */
 public class Constant {
 
+
     public static final int BYTE_BUFFER = 1024;
+
+
+
+
+
     public static  final String UnknownCode="wwwwwwwwwwwwwwww";
     public static Set<String>  METHOD_URL_SET = new HashSet<>();
 

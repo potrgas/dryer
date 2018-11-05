@@ -24,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 
 /**
  *
@@ -103,17 +106,14 @@ public class ChatController {
         try {
             Order r = _orderService.insertOrder(model);
             if (!r.getId().isEmpty()) {
-                String code = "";
+                SortedMap<String, Object> result=new TreeMap<>();
                 if (model.payType==1) {
-                    code = _orderService.weixinPay(r);
+                    result = _orderService.wxPay(r);
                 } else {
-                    code = _orderService.aliPay(r);
                 }
-                if (!code.isEmpty()) {
-                    String url = QrCodeUtil.make(code);
-                    return new PublicResult<>(PublicResultConstant.SUCCESS, url);
+                if (!result.isEmpty()) {
+                    return new PublicResult<>(PublicResultConstant.SUCCESS, result);
                 }
-                return new PublicResult<>(PublicResultConstant.ERROR, "生成支付二维码失败");
             }
             return new PublicResult<>(PublicResultConstant.ERROR, r);
         } catch (Exception e) {
