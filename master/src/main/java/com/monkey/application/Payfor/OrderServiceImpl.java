@@ -110,7 +110,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
             System.out.println("调试模式_统一下单接口 请求XML数据：" + xml);
 
             //调用统一下单接口，并接受返回的结果
-            String result =HttpUtil.postData(PayConfig.AliNotify_url,xml);
+            String result =HttpUtil.postData(PayConfig.PAYURL,xml);
             //PayUtil.httpRequest(WxPayConfig.pay_url, "POST", xml);
             System.out.println("调试模式_统一下单接口 返回XML数据：" + result);
             // 将解析结果存储在HashMap中
