@@ -10,5 +10,7 @@
     <color name="color_main_bg">#669CFD</color>
     <color name="color_blue_2">#6B99F2</color>
     <color name="color_grey">#F9F9F9</color>
+    <color name="grey_line_bg">#E4E4E4</color>
     <color name="color_bg_2">#EAEFF9</color>
+    <color name="color_blue_3">#FF67B7E0</color>
 </resources>

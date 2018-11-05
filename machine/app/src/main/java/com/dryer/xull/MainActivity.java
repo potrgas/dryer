@@ -1,6 +1,8 @@
 package com.dryer.xull;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +10,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +21,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.dryer.xull.activity.LoginActivity;
+import com.dryer.xull.activity.OpenDoorDryActivity;
+import com.dryer.xull.app.SupoffApp;
 import com.dryer.xull.http.HttpTaskUtils;
 import com.dryer.xull.http.OnSuccessAndFailSub;
 import com.dryer.xull.http.ParamsUtils;
@@ -25,6 +32,8 @@ import com.dryer.xull.utils.ScreenUtil;
 import com.dryer.xull.utils.Utils;
 import com.dryer.xull.view.DialogUtils;
 import com.dryer.xull.view.TipDialog;
+import com.google.zxing.WriterException;
+import com.yzq.zxinglibrary.encode.CodeCreator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +80,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivSetting;
     @Bind(R.id.bootView)
     LinearLayout bootView;
+    //popu
+    public  LinearLayout ll_popup_;
+    private  LinearLayout llChunMian;
+    private  LinearLayout llHuaXian;
+    private  LinearLayout llOther;
+    private  TextView tvChunMian;
+    private  TextView tvHuaxian;
+    private  TextView tvOther;
+    private  TextView tvBtn;
+    private  ImageView ivBack;
+    public  int indexSelete=0;
+    private PopupWindow pop;
+    private TextView tvTitlePop;
+    private RelativeLayout rlCode;
+    private LinearLayout llTypeSelect;
+    private ImageView ivCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ivVideoStart.setOnClickListener(this);
         ivMain1.setOnClickListener(this);
         ivStartDry.setOnClickListener(this);
+        ivSetting.setOnClickListener(this);
+
         Log.e("ssss", ScreenUtil.getScreenWidth()+"===="+ScreenUtil.getScreenHeight());
     }
 
@@ -94,24 +121,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        startActivity(new Intent(this, TestActivity.class));
 //    }
 
-//    @OnClick(R.id.iv_code)
-//    public void click1() {
-//        try {
-//            /*
-//             * contentEtString：字符串内容
-//             * w：图片的宽
-//             * h：图片的高
-//             * logo：不需要logo的话直接传null
-//             * */
-//
-//            // Bitmap logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-//            Bitmap bitmap = CodeCreator.createQRCode("http://www.baidu.com", 300, 300, null);
-//            ivCode.setImageBitmap(bitmap);
-//        } catch (WriterException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+
+    public void getUrlCode() {
+        try {
+            /*
+             * contentEtString：字符串内容
+             * w：图片的宽
+             * h：图片的高
+             * logo：不需要logo的话直接传null
+             * */
+
+            // Bitmap logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            Bitmap bitmap = CodeCreator.createQRCode("http://www.baidu.com", 300, 300, null);
+            ivCode.setImageBitmap(bitmap);
+            ivCode.setOnClickListener(this);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     //获取设备编号
     public void getDeviceCode() {
@@ -192,6 +220,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.iv_start_dry:
                 showPopup();
                 break;
+            case R.id.iv_setting:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case R.id.iv_code:
+                startActivity(new Intent(this, OpenDoorDryActivity.class));
+                break;
         }
     }
 
@@ -202,31 +236,125 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tipDialog.show();
     }
 
-    PopupWindow pop;
-
     public void showPopup() {
         if (pop == null) {
-            pop = DialogUtils.createPopupWindow_xull(this, new DialogUtils.OnPopupClickListener() {
+            View view = LayoutInflater.from(this).inflate(R.layout.item_popupwindows, null);
+            llChunMian = view.findViewById(R.id.ll_chunmian);
+            llHuaXian = view.findViewById(R.id.ll_huaxian);
+            llOther = view.findViewById(R.id.ll_qita);
+            tvChunMian = view.findViewById(R.id.tv_cunmian);
+            tvHuaxian = view.findViewById(R.id.tv_huaxian);
+            tvOther = view.findViewById(R.id.tv_other);
+            tvBtn = view.findViewById(R.id.tv_sure_and_pay);
+            ivBack = view.findViewById(R.id.iv_pop_back);
+            tvTitlePop = view.findViewById(R.id.tv_title_pop);
+            rlCode = view.findViewById(R.id.rl_code);
+            llTypeSelect = view.findViewById(R.id.ll_type_select);
+            ivCode =view.findViewById(R.id.iv_code);
+            llChunMian.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onPopupClick(int position,int index) {
-                    if (pop != null) {
-                        if (DialogUtils.ll_popup_ != null) {
-                            DialogUtils.ll_popup_.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.activity_translate_out));
-                        }
-                        pop.dismiss();
+                public void onClick(View v) {
+                    setState(0);
+                }
+            });
+            llHuaXian.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setState(1);
+                }
+            });
+            llOther.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setState(2);
+                }
+            });
+            ivBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (DialogUtils.ll_popup_ != null) {
+                        DialogUtils.ll_popup_.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.activity_translate_out));
                     }
-                    switch (position) {
-                        case 1:
+                    pop.dismiss();
+                }
+            });
 
-                            break;
+
+            ll_popup_ = (LinearLayout) view.findViewById(R.id.ll_popup);
+            // 下面是两种方法得到宽度和高度 getWindow().getDecorView().getWidth()
+            pop = new PopupWindow(view,
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT);
+            // 设置popWindow弹出窗体可点击，这句话必须添加，并且是true
+            pop.setFocusable(true);
+            // 实例化一个ColorDrawable颜色为半透明
+            ColorDrawable dw = new ColorDrawable(0x33000000);
+            pop.setBackgroundDrawable(dw);
+
+            RelativeLayout parent = (RelativeLayout) view.findViewById(R.id.parent);
+            parent.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    if (DialogUtils.ll_popup_ != null) {
+                        DialogUtils.ll_popup_.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.activity_translate_out));
                     }
+                    pop.dismiss();
 
+                }
+            });
+            tvBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    if (DialogUtils.ll_popup_ != null) {
+//                        DialogUtils.ll_popup_.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.activity_translate_out));
+//                    }
+//                    pop.dismiss();
+
+                    llTypeSelect.setVisibility(View.GONE);
+                    tvBtn.setVisibility(View.GONE);
+                    rlCode.setVisibility(View.VISIBLE);
+                    tvTitlePop.setText("请扫码付款");
+                    getUrlCode();
                 }
             });
         }
         if (DialogUtils.ll_popup_ != null) {
             DialogUtils.ll_popup_.startAnimation(AnimationUtils.loadAnimation(this, R.anim.activity_translate_in));
         }
+        indexSelete=0;
+        llTypeSelect.setVisibility(View.VISIBLE);
+        tvBtn.setVisibility(View.VISIBLE);
+        rlCode.setVisibility(View.GONE);
+        tvTitlePop.setText("请选择织物类型");
         pop.showAtLocation(bootView, Gravity.BOTTOM, 0, 0);
+    }
+
+    public  void setState(int index_){
+        indexSelete=index_;
+        llChunMian.setBackgroundResource(R.drawable.shape_corner_grey);
+        llHuaXian.setBackgroundResource(R.drawable.shape_corner_grey);
+        llOther.setBackgroundResource(R.drawable.shape_corner_grey);
+        tvChunMian.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_grey));
+        tvHuaxian.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_grey));
+        tvOther.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_grey));
+        switch (index_){
+            case 0:
+                llChunMian.setBackgroundResource(R.drawable.shape_corner_blue_little);
+                tvChunMian.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_blue_2));
+
+                break;
+            case 1:
+
+                llHuaXian.setBackgroundResource(R.drawable.shape_corner_blue_little);
+                tvHuaxian.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_blue_2));
+
+                break;
+            case 2:
+                llOther.setBackgroundResource(R.drawable.shape_corner_blue_little);
+                tvOther.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_blue_2));
+
+                break;
+        }
     }
 }

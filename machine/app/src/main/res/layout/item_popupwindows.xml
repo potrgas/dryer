@@ -30,6 +30,7 @@
                 android:layout_marginLeft="20dp"
                 android:src="@mipmap/ic_back"/>
             <TextView
+                android:id="@+id/tv_title_pop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="请选择织物类型"
@@ -39,8 +40,10 @@
                 android:layout_centerHorizontal="true"/>
         </RelativeLayout>
         <LinearLayout
+            android:id="@+id/ll_type_select"
             android:layout_width="wrap_content"
-            android:layout_height="116dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="horizontal">
             <View
                 android:layout_width="0dp"
@@ -51,7 +54,7 @@
                 android:id="@+id/ll_chunmian"
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
-                android:background="@color/color_bg_2"
+                android:background="@drawable/shape_corner_blue_little"
                 android:orientation="vertical">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -74,7 +77,7 @@
                 android:layout_width="150dp"
                 android:layout_marginLeft="10dp"
                 android:layout_height="match_parent"
-                android:background="@color/color_white"
+                android:background="@drawable/shape_corner_grey"
                 android:orientation="vertical">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -97,6 +100,7 @@
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
+                android:background="@drawable/shape_corner_grey"
                 android:orientation="vertical">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -132,7 +136,17 @@
             android:background="#6B99F2"
             android:textColor="@color/color_white"
             android:text="确认并支付"/>
-
+        <RelativeLayout
+            android:id="@+id/rl_code"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/iv_code"
+                android:layout_width="155dp"
+                android:layout_height="155dp"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
 
     </LinearLayout>
 
