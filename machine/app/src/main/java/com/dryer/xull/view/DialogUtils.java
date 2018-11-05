@@ -26,8 +26,9 @@ public class DialogUtils {
     private static TextView tvHuaxian;
     private static TextView tvOther;
     private static TextView tvBtn;
-    private static int index=0;
-
+    private static ImageView ivBack;
+    public static int index=0;
+    private static View tvTitlePop;
 
 
     public interface OnPopupClickListener {
@@ -51,6 +52,9 @@ public class DialogUtils {
         tvHuaxian = view.findViewById(R.id.tv_huaxian);
         tvOther = view.findViewById(R.id.tv_other);
         tvBtn = view.findViewById(R.id.tv_sure_and_pay);
+        ivBack = view.findViewById(R.id.iv_pop_back);
+
+
         llChunMian.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +73,14 @@ public class DialogUtils {
                 setState(2);
             }
         });
-
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onPopupClickListener != null) {
+                    onPopupClickListener.onPopupClick(0,0);
+                }
+            }
+        });
 
 
         ll_popup_ = (LinearLayout) view.findViewById(R.id.ll_popup);
@@ -106,26 +117,26 @@ public class DialogUtils {
     }
     public static void setState(int index_){
         index=index_;
-        llChunMian.setBackgroundColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_white));
-        llHuaXian.setBackgroundColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_white));
-        llOther.setBackgroundColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_white));
+        llChunMian.setBackgroundResource(R.drawable.shape_corner_grey);
+        llHuaXian.setBackgroundResource(R.drawable.shape_corner_grey);
+        llOther.setBackgroundResource(R.drawable.shape_corner_grey);
         tvChunMian.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_grey));
         tvHuaxian.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_grey));
         tvOther.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_grey));
         switch (index){
             case 0:
-                llChunMian.setBackgroundColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_bg_2));
+                llChunMian.setBackgroundResource(R.drawable.shape_corner_blue_little);
                 tvChunMian.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_blue_2));
 
                 break;
             case 1:
 
-                llHuaXian.setBackgroundColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_bg_2));
+                llHuaXian.setBackgroundResource(R.drawable.shape_corner_blue_little);
                 tvHuaxian.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_blue_2));
 
                 break;
             case 2:
-                llOther.setBackgroundColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_bg_2));
+                llOther.setBackgroundResource(R.drawable.shape_corner_blue_little);
                 tvOther.setTextColor(ContextCompat.getColor(SupoffApp.appContext,R.color.color_blue_2));
 
                 break;
