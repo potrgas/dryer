@@ -5,7 +5,8 @@
 		"es6": true,
 		"postcss": false,
 		"minified": false,
-		"newFeature": true
+		"newFeature": true,
+		"nodeModules": true
 	},
 	"miniprogramRoot": "dist/",
 	"compileType": "miniprogram",

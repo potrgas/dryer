@@ -15,6 +15,7 @@ import com.monkey.web.controller.dtos.StaticalInput;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * <p>
@@ -32,7 +33,7 @@ public interface IOrderService extends IService<Order> {
     String aliPay(Order input) throws Exception;
 
     void updateOrderStatte(String orderNum, Integer orderState, Integer payState,String backNum);
-
+     SortedMap<String, Object> wxPay(Order input);
     String weixinBack(Order input) throws  Exception;
     Map<String,Object> getDashboard(Integer tenantId);
     Map<String,Object> getStaticial(Integer tenantId, Date start,Date end);
