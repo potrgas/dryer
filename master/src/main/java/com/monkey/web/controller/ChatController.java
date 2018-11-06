@@ -148,7 +148,6 @@ public class ChatController {
     }
 
     @Pass
-    @Log(description = "小程序:/获取订单和余额")
     @ApiOperation(value = "获取订单和余额", notes = "小程序")
     @RequestMapping(value = "/info/{openId}", method = RequestMethod.GET)
     public PublicResult<CustomerInfoDto> back(@PathVariable String openId) throws Exception {
