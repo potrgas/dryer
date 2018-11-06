@@ -22,7 +22,7 @@
           placeholder="小区" />
         <van-field id="address" @change="inputValue" :value="order.address" required clearable label="取件地址" placeholder="取件地址" />
         <van-radio-group :value="order.type">
-          <van-cell title="剩余次数(4次)" clickable data-name="1" @click="selectTime(1,10)">
+          <van-cell v-if="balance>0" :title="'剩余次数('+balance+')次'" clickable data-name="1" @click="selectTime(1,10)">
             <div>10元</div>
             <div v-if="order.isTime==1">√</div>
           </van-cell>
@@ -58,6 +58,7 @@
 <script>
 // Use Vuex
 import { mapMutations } from "vuex";
+import { post, get } from "@/utils/api";
 import areaList from "../../utils/area";
 import Toast from "../../../static/vant/toast/toast";
 export default {
@@ -86,6 +87,7 @@ export default {
           "120105": "河北区"
         }
       },
+      balance: 0,
       order: {
         dryType: 1,
         isTime: null,
@@ -112,6 +114,15 @@ export default {
     }),
     inputValue(e) {
       this.order[e.mp.target.id] = e.mp.detail;
+    },
+    getLessMore() {
+      var obj = wx.getStorageSync("openId");
+      let param = { url: "api/chat/info/" + obj };
+      get(param).then(r => {
+        if (r.result == "00000000") {
+          this.balance = r.data.balance;
+        }
+      });
     },
     gotopayfor() {
       //todo vilidate
@@ -167,6 +178,9 @@ export default {
       this.set_userInfo(mo);
       this.order.customerName = mo.nickName;
     }
+  },
+  mounted() {
+    this.getLessMore();
   },
   created() {}
 };

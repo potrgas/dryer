@@ -41,7 +41,6 @@ export function getopenId() {
             console.log(res);
             if (res.data.result == "00000000") {
               wx.setStorageSync('openId', res.data.data.openId); //存储openid
-              wx.setStorageSync('balance', res.data.data.balance); //存储openid
             } else
               console.log('获取用户登录态失败！' + res.data.msg)
           }
