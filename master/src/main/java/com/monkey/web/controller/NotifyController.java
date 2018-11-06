@@ -3,14 +3,14 @@ package com.monkey.web.controller;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.monkey.application.Payfor.IChargeorderService;
 import com.monkey.application.Payfor.IOrderService;
 import com.monkey.application.Payfor.ISerialService;
+import com.monkey.application.customer.ICustomerService;
 import com.monkey.common.base.SocketConstant;
 import com.monkey.common.util.CipherTextUtil;
 import com.monkey.common.wechatsdk.XMLUtil4jdom;
-import com.monkey.core.entity.Order;
-import com.monkey.core.entity.Payfor;
-import com.monkey.core.entity.Serial;
+import com.monkey.core.entity.*;
 import com.monkey.web.aspect.WebSocketServer;
 import com.monkey.web.controller.dtos.WebSocketMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,11 @@ import java.util.*;
 public class NotifyController {
     @Autowired
     IOrderService _orderService;
+
+    @Autowired
+    IChargeorderService _chargeService;
+    @Autowired
+    ICustomerService _customerService;
     @Autowired
     ISerialService _serialService;
 
@@ -149,7 +154,7 @@ public class NotifyController {
             System.out.println("回掉请求失败");
         }
     }
-
+    ///订单支付回掉
     @RequestMapping(value = "/notify")
     public void weixin_notify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("调用支付成功回调方法");
@@ -229,6 +234,70 @@ public class NotifyController {
                 System.out.println("执行支付回掉函数失败");
             }
         } else {
+        }
+    }
+
+    ///充值 回掉
+    @RequestMapping(value = "/charge")
+    public void weixin_charge(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("调用支付成功回调方法");
+        //读取参数
+        InputStream inputStream;
+        StringBuffer sb = new StringBuffer();
+        inputStream = request.getInputStream();
+        String s;
+        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+        while ((s = in.readLine()) != null) {
+            sb.append(s);
+        }
+        in.close();
+        inputStream.close();
+
+        //解析xml成map
+        Map<String, String> m = XMLUtil4jdom.doXMLParse(sb.toString());
+        SortedMap<Object, Object> packageParams = getparams(m);
+
+        //------------------------------
+        //处理业务开始
+        //------------------------------
+        String resXml = "";
+        if ("SUCCESS".equals(packageParams.get("result_code"))) {
+            // 这里是支付成功
+            String mch_id = (String) packageParams.get("mch_id");
+            String openid = (String) packageParams.get("openid");
+            String is_subscribe = (String) packageParams.get("is_subscribe");
+            String out_trade_no = (String) packageParams.get("out_trade_no");
+            String total_fee = (String) packageParams.get("total_fee");
+            String cash_fee_s = (String) packageParams.get("cash_fee");
+            String cash_fee = String.valueOf(Integer.parseInt(cash_fee_s) / 100);
+            String transaction_id = (String) packageParams.get("transaction_id");
+            //////////执行自己的业务逻辑（报存订单信息到数据库）////////////////
+            Chargeorder o = _chargeService.selectById(out_trade_no);
+            if (o != null) {
+                EntityWrapper ew = new EntityWrapper();
+                ew.eq("openId", openid);
+                o.setPayState(1);
+                _chargeService.updateById(o);
+                Customer c = _customerService.selectOne(ew);
+                c.setBalance(c.getBalance() + o.getCount());
+                _customerService.updateById(c);
+                BufferedOutputStream out = new BufferedOutputStream(
+                        response.getOutputStream());
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+                out.write(resXml.getBytes());
+                out.flush();
+                out.close();
+                System.out.println("通知微信.异步确认成功");
+            }
+        } else {
+            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
+                    + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
+            BufferedOutputStream out = new BufferedOutputStream(
+                    response.getOutputStream());
+            out.write(resXml.getBytes());
+            out.flush();
+            out.close();
         }
     }
 

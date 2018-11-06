@@ -2,19 +2,24 @@ package com.monkey.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.monkey.application.Payfor.IOrderService;
 import com.monkey.application.customer.ICustomerService;
+import com.monkey.application.dtos.PagedAndFilterInputDto;
 import com.monkey.common.base.Constant;
 import com.monkey.common.base.PermissionConst;
 import com.monkey.common.base.PublicResult;
 import com.monkey.common.base.PublicResultConstant;
 import com.monkey.common.util.AesCbcUtil;
+import com.monkey.common.util.ComUtil;
 import com.monkey.common.wechatsdk.HttpUtil;
-import com.monkey.common.wechatsdk.QrCodeUtil;
+import com.monkey.core.entity.Chargeorder;
 import com.monkey.core.entity.Customer;
 import com.monkey.core.entity.Order;
 import com.monkey.web.annotation.Log;
 import com.monkey.web.annotation.Pass;
+import com.monkey.web.controller.dtos.ChargeOrderInput;
+import com.monkey.web.controller.dtos.CustomerInfoDto;
 import com.monkey.web.controller.dtos.OrderInput;
 import com.monkey.web.controller.dtos.WechatCodeInput;
 import io.swagger.annotations.ApiOperation;
@@ -24,13 +29,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 
 /**
- *
- *
  * @author liugh
  * @since 2018-05-03
  */
@@ -106,8 +110,8 @@ public class ChatController {
         try {
             Order r = _orderService.insertOrder(model);
             if (!r.getId().isEmpty()) {
-                SortedMap<String, Object> result=new TreeMap<>();
-                if (model.payType==1) {
+                SortedMap<String, Object> result = new TreeMap<>();
+                if (model.payType == 1) {
                     result = _orderService.wxPay(r);
                 } else {
                 }
@@ -120,27 +124,59 @@ public class ChatController {
             return new PublicResult<>(PublicResultConstant.FAILED, e.getMessage());
         }
     }
+
+
     @Pass
-    @Log(description = "订单接口:/退款操作")
-    @ApiOperation(value = "退款操作", notes = "小程序")
-    @RequestMapping(value = "/back/{orderId}", method = RequestMethod.GET)
-    @RequiresPermissions(value = {PermissionConst._orders._order.back})
-    public PublicResult<Object> back(@PathVariable String orderId) throws Exception {
+    @Log(description = "订单接口:/客户充值操作")
+    @ApiOperation(value = "客户充值操作", notes = "小程序")
+    @RequestMapping(value = "/charge", method = RequestMethod.POST)
+    public PublicResult<Object> charge(@RequestBody ChargeOrderInput model) throws Exception {
         try {
-            Order r = _orderService.selectById(orderId);
-            if (r != null) {
-                String result = "";
-                if (r.getPayType() == 1) {
-                    result = _orderService.weixinBack(r);
-                } else {
-                    result = _orderService.aliback(r);
+            Chargeorder r = _orderService.insertChargeOrder(model);
+            if (!r.getId().isEmpty()) {
+                SortedMap<String, Object> result;
+                result = _orderService.wxChargePay(r);
+                if (!result.isEmpty()) {
+                    return new PublicResult<>(PublicResultConstant.SUCCESS, result);
                 }
-                if (result.isEmpty()) return new PublicResult<>(PublicResultConstant.FAILED, "退款申请请求失败");
-                return new PublicResult<>(PublicResultConstant.SUCCESS, "退款申请请求成功");
+                return new PublicResult<>(PublicResultConstant.ERROR, r);
             }
-            return new PublicResult<>(PublicResultConstant.ERROR, "暂无此订单信息");
+            return new PublicResult<>(PublicResultConstant.ERROR, r);
         } catch (Exception e) {
             return new PublicResult<>(PublicResultConstant.FAILED, e.getMessage());
         }
+    }
+
+    @Pass
+    @Log(description = "获取余额和订单:/")
+    @ApiOperation(value = "获取订单和余额", notes = "小程序")
+    @RequestMapping(value = "/info/{openId}", method = RequestMethod.GET)
+    public PublicResult<CustomerInfoDto> back(@PathVariable String openId) throws Exception {
+        try {
+            CustomerInfoDto res = new CustomerInfoDto(openId, 0, 0);
+            EntityWrapper ew = new EntityWrapper();
+            ew.eq("openId", openId);
+            Customer r = _customerService.selectOne(ew);
+            if (r != null) {
+                Integer count = _orderService.selectCount(ew);
+                res.setBalance(r.getBalance());
+                res.setOrder(count);
+                return new PublicResult<>(PublicResultConstant.SUCCESS, res);
+            }
+            return new PublicResult<>(PublicResultConstant.ERROR, null);
+        } catch (Exception e) {
+            return new PublicResult<>(PublicResultConstant.FAILED, null);
+        }
+    }
+
+    @Pass
+    @ApiOperation(value = "获取订单列表", notes = "小程序")
+    @RequestMapping(value = "/orders", method = RequestMethod.POST)
+    public PublicResult<Page<Order>> orders(@RequestBody PagedAndFilterInputDto page) throws Exception {
+        EntityWrapper<Order> filter = new EntityWrapper<>();
+        String openId = (String) page.where.get("openId");
+        filter.eq("openId", openId);
+        Page<Order> res = _orderService.selectPage(new Page<>(page.index, page.size), filter);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, res);
     }
 }

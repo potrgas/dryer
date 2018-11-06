@@ -1,5 +1,5 @@
 <template>
-  <div  @click="clickHandle('test click', $event)">
+  <div  >
     <div class="userinfo" @click="bindViewTap">
       <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl"
        background-size="cover" />
@@ -8,13 +8,12 @@
       </div>
     </div>
     <van-cell-group>
-      <van-cell value="9" icon="shop" url="../buy/main" is-link >
+      <van-cell :value="balance +'次'" icon="shop" url="../buy/main" is-link >
         <view slot="title">
           <span class="van-cell-text">剩余次数</span>
-          <van-tag type="danger">9</van-tag>
         </view>
       </van-cell>
-      <van-cell  is-link url="../myorders/main"  icon="location" title="我的订单" border="false">
+      <van-cell :value="order+'次'"  is-link url="../myorders/main"  icon="location" title="我的订单" border="false">
         <van-icon slot="right-icon" name="search" class="van-cell__right-icon" />
       </van-cell>
     </van-cell-group>
@@ -23,39 +22,26 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { post, get } from "@/utils/api";
 export default {
   data() {
     return {
-      motto: "Hello World"
+      order: 0,
+      balance: 0
     };
   },
   computed: {
     ...mapGetters(["userInfo"])
   },
   components: {},
-
   methods: {
-    bindViewTap() {
-      const url = "../logs/main";
-      wx.navigateTo({
-        url
-      });
-    },
-    getUserInfo() {
-      // 调用登录接口
-      wx.login({
-        success: () => {
-          wx.getUserInfo({
-            success: res => {
-              console.log(res);
-              this.userInfo = res.userInfo;
-            }
-          });
+    getLessMore() {
+      var obj = wx.getStorageSync("openId");
+      let param = { url: "api/chat/info?openId=", data: obj };
+      get(param).then(r => {
+        if ((r.data.result = "00000000")) {
         }
       });
-    },
-    clickHandle(msg, ev) {
-      console.log("clickHandle:", msg, ev);
     }
   },
 

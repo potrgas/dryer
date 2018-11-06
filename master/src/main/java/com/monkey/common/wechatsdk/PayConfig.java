@@ -1,7 +1,6 @@
 package com.monkey.common.wechatsdk;
 
 public class PayConfig {
-    public final static String Notify_Url="https://service.leftins.com/pay/notify";
     public final static String Back_Url="https://service.leftins.com/pay/back";
 
     public final static String Ufdoder_Url="https://api.mch.weixin.qq.com/pay/unifiedorder";
@@ -10,6 +9,8 @@ public class PayConfig {
     public final static String AliNotify_url="https://service.leftins.com/pay/alinotify";
     public final static String Alibackurl="https://service.leftins.com/pay/aliback";
 
+    public final static String Notify_Url="https://service.leftins.com/pay/notify";
+    public final static String Charge_Notify_Url="https://service.leftins.com/pay/charge";
 
 
     public static final String APPID = "wx3462f1fc533ebe71";

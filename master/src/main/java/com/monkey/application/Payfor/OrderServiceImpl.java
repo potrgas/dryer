@@ -21,12 +21,14 @@ import com.monkey.core.dtos.ProductSaleStatical;
 import com.monkey.core.dtos.SalePercentDto;
 import com.monkey.core.dtos.TodayStatical;
 import com.monkey.core.entity.*;
+import com.monkey.core.mapper.ChargeorderRepository;
 import com.monkey.core.mapper.OrderRepository;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.monkey.core.mapper.PayforRepository;
 import com.monkey.core.mapper.ProductRepository;
 import com.monkey.web.aspect.WebSocketServer;
+import com.monkey.web.controller.dtos.ChargeOrderInput;
 import com.monkey.web.controller.dtos.OrderInput;
 import com.monkey.web.controller.dtos.StaticalInput;
 import com.monkey.web.controller.dtos.WebSocketMessage;
@@ -51,6 +53,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
     //创建订单
     @Autowired
     OrderRepository _orderRepository;
+    @Autowired
+    ChargeorderRepository _chargeRepository;
     @Autowired
     IDeviceService _deviceService;
     @Autowired
@@ -140,6 +144,83 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
         }
         return null;
     }
+
+    /**
+     * @Description: 发起微信支付
+     * @param input 订单
+     */
+    public SortedMap<String, Object> wxChargePay(Chargeorder input){
+        try{
+            String currTime = PayToolUtil.getCurrTime();
+            String strTime = currTime.substring(8, currTime.length());
+            String strRandom = PayToolUtil.buildRandom(4) + "";
+            String nonce_str = strTime + strRandom;
+            //商品名称
+            String body = input.getProductName();
+            // 获取发起电脑 ip
+            String spbill_create_ip = PayConfig.Create_Ip;
+            // 回调接口
+            //组装参数，用户生成统一下单接口的签名
+            SortedMap<Object, Object> packageParams = new TreeMap<Object, Object>();
+            packageParams.put("appid", PayConfig.APPID);
+            packageParams.put("mch_id", PayConfig.SHOPID);
+            packageParams.put("nonce_str", nonce_str);
+            packageParams.put("body", body);
+            packageParams.put("out_trade_no",input.getId());//商户订单号
+            packageParams.put("total_fee", input.getPrice().toString());//支付金额，这边需要转成字符串类型，否则后面的签名会失败
+            packageParams.put("spbill_create_ip", spbill_create_ip);
+            packageParams.put("notify_url",PayConfig.Charge_Notify_Url);//支付成功后的回调地址
+            packageParams.put("trade_type", "JSAPI");//支付方式
+            packageParams.put("openid", input.getOpenId());
+
+            String sign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.PAYFOR);
+
+            //拼接统一下单接口使用的xml数据，要将上一步生成的签名一起拼接进去
+            String xml = "<xml>" + "<appid>" + PayConfig.APPID + "</appid>"
+                    + "<body><![CDATA[" + body + "]]></body>"
+                    + "<mch_id>" + PayConfig.SHOPID + "</mch_id>"
+                    + "<nonce_str>" + nonce_str + "</nonce_str>"
+                    + "<notify_url>" + PayConfig.Charge_Notify_Url + "</notify_url>"
+                    + "<openid>" + input.getOpenId() + "</openid>"
+                    + "<out_trade_no>" + input.getId() + "</out_trade_no>"
+                    + "<spbill_create_ip>" + spbill_create_ip + "</spbill_create_ip>"
+                    + "<total_fee>" + input.getPrice() + "</total_fee>"
+                    + "<trade_type>JSAPI</trade_type>"
+                    + "<sign>" + sign + "</sign>"
+                    + "</xml>";
+
+            System.out.println("调试模式_统一下单接口 请求XML数据：" + xml);
+            //调用统一下单接口，并接受返回的结果
+            String result =HttpUtil.postData(PayConfig.PAYURL,xml);
+            //PayUtil.httpRequest(WxPayConfig.pay_url, "POST", xml);
+            System.out.println("调试模式_统一下单接口 返回XML数据：" + result);
+            // 将解析结果存储在HashMap中
+            Map map = XMLUtil4jdom.doXMLParse(result);
+            logger.warn(JSON.toJSONString(map));
+
+            String return_code = (String) map.get("return_code");//返回状态码
+            SortedMap<String, Object> response = new TreeMap<String, Object>();
+            if(return_code.equals("SUCCESS")){
+                String prepay_id = (String) map.get("prepay_id");//返回的预付单信息
+                response.put("nonceStr", nonce_str);
+                response.put("package", "prepay_id=" + prepay_id);
+                Long timeStamp = System.currentTimeMillis() / 1000;
+                response.put("timeStamp", timeStamp + "");//这边要将返回的时间戳转化成字符串，不然小程序端调用wx.requestPayment方法会报签名错误
+                //拼接签名需要的参数
+                String stringSignTemp = "appId=" + PayConfig.APPID + "&nonceStr=" + nonce_str + "&package=prepay_id=" + prepay_id+ "&signType=MD5&timeStamp=" + timeStamp;
+                //再次签名，这个签名用于小程序端调用wx.requesetPayment方法
+                String paySign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.PAYFOR);
+                response.put("paySign", paySign);
+            }
+            response.put("appid", PayConfig.APPID);
+            return response;
+
+        }catch(Exception e){
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
     /*
      * 创建订单*/
     @Override
@@ -161,6 +242,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
         _orderRepository.insert(o);
         return o;
     }
+    /*
+   * 创建订单*/
+    @Override
+    public Chargeorder insertChargeOrder(ChargeOrderInput input) throws Exception {
+        Chargeorder o = new Chargeorder();
+        o.setOrderState(0);
+        o.setPayState(0);
+        o.setOpenId(input.openId);
+        o.setCount(input.count);
+        o.setPrice(input.price);
+        o.setProductName(input.productName);
+        _chargeRepository.insert(o);
+        return o;
+    }
+
     /*微信支付*/
     @Override
     public String weixinPay(Order input) throws Exception {

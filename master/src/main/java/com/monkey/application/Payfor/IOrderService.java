@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.monkey.core.dtos.DeviceSaleStatical;
 import com.monkey.core.dtos.OrderStaticialDto;
 import com.monkey.core.dtos.ProductSaleStatical;
+import com.monkey.core.entity.Chargeorder;
 import com.monkey.core.entity.Device;
 import com.monkey.core.entity.Order;
 import com.baomidou.mybatisplus.service.IService;
 import com.monkey.core.entity.Payfor;
+import com.monkey.web.controller.dtos.ChargeOrderInput;
 import com.monkey.web.controller.dtos.OrderInput;
 import com.monkey.web.controller.dtos.StaticalInput;
 
@@ -27,13 +29,15 @@ import java.util.SortedMap;
  */
 public interface IOrderService extends IService<Order> {
     Order insertOrder(OrderInput input) throws Exception;
+    Chargeorder insertChargeOrder(ChargeOrderInput input) throws Exception;
 
     String weixinPay(Order input) throws Exception;
 
     String aliPay(Order input) throws Exception;
 
     void updateOrderStatte(String orderNum, Integer orderState, Integer payState,String backNum);
-     SortedMap<String, Object> wxPay(Order input);
+    SortedMap<String, Object> wxPay(Order input);
+    SortedMap<String, Object> wxChargePay(Chargeorder input);
     String weixinBack(Order input) throws  Exception;
     Map<String,Object> getDashboard(Integer tenantId);
     Map<String,Object> getStaticial(Integer tenantId, Date start,Date end);

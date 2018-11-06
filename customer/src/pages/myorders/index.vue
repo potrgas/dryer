@@ -6,7 +6,6 @@
           <span class="van-cell-text">2018年12月13日</span>
         </view>
       </van-cell>
-    
      <van-cell value="完成" @click="gotodetail(1)" icon="info-o" is-link>
         <view slot="title">
           <span class="van-cell-text">2018年12月14日</span>
@@ -24,53 +23,24 @@
 </template>
 
 <script>
+import { post, get } from "@/utils/api";
 // Use Vuex
 export default {
   data() {
     return {
-      customer: {},
-      radio: "1",
-      userInfo: {}
+      list: []
     };
   },
 
   components: {},
 
   methods: {
-    onClick(e) {
-      this.radio = e;
-      console.log(e);
-    },
+    loadList() {},
     gotodetail(key) {
       const url = "../details/main";
       wx.navigateTo({
         url
       });
-    },
-    onChange() {
-      console.log(2);
-    },
-    bindViewTap() {
-      const url = "../logs/main";
-      wx.navigateTo({
-        url
-      });
-    },
-
-    getUserInfo() {
-      // 调用登录接口
-      wx.login({
-        success: () => {
-          wx.getUserInfo({
-            success: res => {
-              this.userInfo = res.userInfo;
-            }
-          });
-        }
-      });
-    },
-    clickHandle(msg, ev) {
-      console.log("clickHandle:", msg, ev);
     }
   },
 

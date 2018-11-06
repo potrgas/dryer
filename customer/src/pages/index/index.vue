@@ -98,7 +98,7 @@ export default {
         openId: "",
         payType: 1
       },
-      showBox: false,
+      showBox: true,
       showpop: false
     };
   },

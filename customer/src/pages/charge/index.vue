@@ -21,12 +21,7 @@
         <van-button type="primary">在线支付</van-button>
       </van-col>
     </van-row>
-
-    <van-dialog use-slot async-close :show="showBox" show-cancel-button confirm-button-open-type="getUserInfo" @close="onClose"
-      @getuserinfo="auth" @getphonenumber="auth">
-      <img src="../../../static/images/grunt.png" />
-      是否授权获取您的信息
-    </van-dialog>
+  
   </div>
 </template>
 <script>
