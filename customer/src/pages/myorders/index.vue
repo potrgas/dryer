@@ -1,20 +1,10 @@
 <template>
   <div class="box">
     <van-cell-group>
-      <van-cell value="待取回" @click="gotodetail(1)" icon="shop" is-link >
+      <van-cell v-for="item in list" :key="item.id" :value="item.orderState==0?'待烘干':(item.orderState==1?'待取回':'已取回')"
+       @click="gotodetail(item)" :icon="item.dryType==1?'shop':(item.dryType==2?'info-o':'like-o')" is-link >
         <view slot="title">
-          <span class="van-cell-text">2018年12月13日</span>
-        </view>
-      </van-cell>
-     <van-cell value="完成" @click="gotodetail(1)" icon="info-o" is-link>
-        <view slot="title">
-          <span class="van-cell-text">2018年12月14日</span>
-        </view>
-      </van-cell>
-
-       <van-cell value="取消" @click="gotodetail(1)" icon="like-o" is-link>
-        <view slot="title">
-          <span class="van-cell-text">2018年12月15日</span>
+          <span class="van-cell-text">{{item.creationTime}}</span>
         </view>
       </van-cell>
     </van-cell-group>
@@ -24,10 +14,17 @@
 
 <script>
 import { post, get } from "@/utils/api";
+import { mapMutations } from "vuex";
 // Use Vuex
 export default {
   data() {
     return {
+      total: 0,
+      params: {
+        index: 1,
+        size: 10,
+        where: {}
+      },
       list: []
     };
   },
@@ -35,15 +32,31 @@ export default {
   components: {},
 
   methods: {
-    loadList() {},
-    gotodetail(key) {
+    ...mapMutations({
+      set_currentOrder: "set_currentOrder"
+    }),
+    loadList() {
+      var obj = wx.getStorageSync("openId");
+      this.params.where = { openId: obj };
+      let p = { url: "api/chat/orders", data: this.params };
+      post(p).then(r => {
+        if (r.result == "00000000") {
+          this.list = r.data.records;
+          this.total = r.data.total;
+        }
+      });
+    },
+    gotodetail(item) {
+      this.set_currentOrder(item);
       const url = "../details/main";
       wx.navigateTo({
         url
       });
     }
   },
-
+  mounted() {
+    this.loadList();
+  },
   created() {}
 };
 </script>

@@ -4,6 +4,9 @@ const mutations = {
   },
   set_order(state,order){
     state.order=order;
+  },
+  set_currentOrder(state,order){
+    state.currentOrder=order;
   }
 }
 

@@ -8,12 +8,12 @@
       </div>
     </div>
     <van-cell-group>
-      <van-cell :value="balance +'次'" icon="shop" url="../buy/main" is-link >
+      <van-cell :value="balance+'次'" icon="shop" url="../buy/main" is-link >
         <view slot="title">
           <span class="van-cell-text">剩余次数</span>
         </view>
       </van-cell>
-      <van-cell :value="order+'次'"  is-link url="../myorders/main"  icon="location" title="我的订单" border="false">
+      <van-cell :value="order+'条'"  is-link url="../myorders/main"  icon="location" title="我的订单" border="false">
         <van-icon slot="right-icon" name="search" class="van-cell__right-icon" />
       </van-cell>
     </van-cell-group>
@@ -39,9 +39,9 @@ export default {
       var obj = wx.getStorageSync("openId");
       let param = { url: "api/chat/info/" + obj };
       get(param).then(r => {
-        if ((r.data.result = "00000000")) {
-          this.order = r.data.data.order;
-          this.balance = r.data.data.balance;
+        if (r.result == "00000000") {
+          this.order = r.data.order;
+          this.balance = r.data.balance;
         }
       });
     }

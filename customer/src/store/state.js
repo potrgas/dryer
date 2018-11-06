@@ -1,5 +1,5 @@
 const state = {
   userInfo: {},
-  order: {}
+  currentOrder: {}
 }
 export default state
