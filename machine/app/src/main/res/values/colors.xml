@@ -13,4 +13,6 @@
     <color name="grey_line_bg">#E4E4E4</color>
     <color name="color_bg_2">#EAEFF9</color>
     <color name="color_blue_3">#FF67B7E0</color>
+
+    <color name="color_grey_2">#FF999999</color>
 </resources>
