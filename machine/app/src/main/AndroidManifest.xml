@@ -36,7 +36,8 @@
             android:exported="true" />
 
         <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.OpenDoorDryActivity"></activity>
+        <activity android:name=".activity.OpenDoorDryActivity" />
+        <activity android:name=".activity.SettingActivity"></activity>
     </application>
 
 </manifest>
