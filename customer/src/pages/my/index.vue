@@ -37,14 +37,18 @@ export default {
   methods: {
     getLessMore() {
       var obj = wx.getStorageSync("openId");
-      let param = { url: "api/chat/info?openId=", data: obj };
+      let param = { url: "api/chat/info/" + obj };
       get(param).then(r => {
         if ((r.data.result = "00000000")) {
+          this.order = r.data.data.order;
+          this.balance = r.data.data.balance;
         }
       });
     }
   },
-
+  mounted() {
+    this.getLessMore();
+  },
   created() {}
 };
 </script>

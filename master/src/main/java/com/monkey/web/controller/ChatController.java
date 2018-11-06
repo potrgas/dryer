@@ -103,7 +103,7 @@ public class ChatController {
     }
 
     @Pass
-    @Log(description = "订单接口:/客户下单操作")
+    @Log(description = "小程序:/客户下单操作")
     @ApiOperation(value = "客户下单操作", notes = "小程序")
     @RequestMapping(value = "/make", method = RequestMethod.POST)
     public PublicResult<Object> insert(@RequestBody OrderInput model) throws Exception {
@@ -127,7 +127,7 @@ public class ChatController {
 
 
     @Pass
-    @Log(description = "订单接口:/客户充值操作")
+    @Log(description = "小程序:/客户充值操作")
     @ApiOperation(value = "客户充值操作", notes = "小程序")
     @RequestMapping(value = "/charge", method = RequestMethod.POST)
     public PublicResult<Object> charge(@RequestBody ChargeOrderInput model) throws Exception {
@@ -148,7 +148,7 @@ public class ChatController {
     }
 
     @Pass
-    @Log(description = "获取余额和订单:/")
+    @Log(description = "小程序:/获取订单和余额")
     @ApiOperation(value = "获取订单和余额", notes = "小程序")
     @RequestMapping(value = "/info/{openId}", method = RequestMethod.GET)
     public PublicResult<CustomerInfoDto> back(@PathVariable String openId) throws Exception {
