@@ -29,6 +29,7 @@
         <velocity.version>1.7</velocity.version>
         <shiro-spring.version>1.4.0</shiro-spring.version>
         <java-jwt.version>3.2.0</java-jwt.version>
+        <mysql-connector-java.version>8.0.11</mysql-connector-java.version>
         <dom4j.version>1.6.1</dom4j.version>
         <pinyin4j.version>2.5.0</pinyin4j.version>
         <gson.version>2.8.5</gson.version>
@@ -43,7 +44,11 @@
             <artifactId>springfox-swagger2</artifactId>
             <version>2.8.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector-java.version}</version>
+        </dependency>
         <!--微信支付sdk开始-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
