@@ -187,4 +187,14 @@ public class ChatController {
        if(o==null)return  new PublicResult<Order>(PublicResultConstant.FAILED,null);
         return new PublicResult<>(PublicResultConstant.SUCCESS, o);
     }
+    @Pass
+    @ApiOperation(value = "更新订单进度", notes = "小程序")
+    @RequestMapping(value = "/order/{id}/{state}", method = RequestMethod.PUT)
+    public PublicResult<Order> update(@PathVariable String id,@PathVariable Integer state) throws Exception {
+        Order o= _orderService.selectById(id);
+        if(o==null)return  new PublicResult<Order>(PublicResultConstant.FAILED,null);
+        o.setOrderState(state);
+        _orderService.updateById(o);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, o);
+    }
 }

@@ -21,7 +21,7 @@
         <van-field :value="currentOrder.address" required readonly label="取件地址" placeholder="请输入取件地址" />
       
         <van-row>
-          <van-col v-if="currentOrder.orderState==3" span="8" offset="8">
+          <van-col v-if="currentOrder.orderState==0" span="8" offset="8">
             <van-button @click="got" type="primary">确认接收</van-button>
           </van-col>
         </van-row>
@@ -33,7 +33,7 @@
 <script>
 // Use Vuex
 import { mapGetters } from "vuex";
-import { get, post } from "@/utils/api";
+import { get, post, put } from "@/utils/api";
 export default {
   data() {
     return {
@@ -48,9 +48,16 @@ export default {
   methods: {
     //接受货物 更改状态 返回首页
     got() {
-      wx.switchTab({
-        url: "../index/main"
-      });
+      if (this.currentOrder.id) {
+        let params = { url: "api/chat/order/" + this.order + "/1" };
+        put(params).then(r => {
+          if (r.result == "00000000") {
+            wx.switchTab({
+              url: "../index/main"
+            });
+          }
+        });
+      }
     }
   },
   mounted() {

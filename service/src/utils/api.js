@@ -27,7 +27,10 @@ const appid = config.appid;
 export const get = (params) => {
   return fly.get(`${host}${params.url}`, params.data)
 };
-
+// 通用的get请求
+export const put = (params) => {
+  return fly.put(`${host}${params.url}`, params.data)
+};
 // 通用的post请求
 export const post = (params) => {
   return fly.post(`${host}${params.url}`, params.data)

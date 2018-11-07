@@ -15,18 +15,7 @@
 import { mapMutations } from "vuex";
 export default {
   data() {
-    return {
-      showBox: true,
-      customer: {
-        radio: "1",
-        type: "paynow",
-        name: "",
-        name: "",
-        address: ""
-      },
-      userInfo: {},
-      account: {}
-    };
+    return {};
   },
 
   components: {},
@@ -37,14 +26,11 @@ export default {
     }),
     scan() {
       var _ = this;
-      console.log(1);
       // 只允许从相机扫码
       wx.scanCode({
         onlyFromCamera: true,
         success(res) {
-          console.log(res);
           if (res && res.result) {
-            console.log(2);
             _.set_order(res.result);
             wx.navigateTo({
               url: "../details/main"
