@@ -1,4 +1,5 @@
 const state = {
-  userInfo: {}
+  operater: {},
+  order: ""
 }
 export default state

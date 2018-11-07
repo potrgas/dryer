@@ -178,4 +178,13 @@ public class ChatController {
         Page<Order> res = _orderService.selectPage(new Page<>(page.index, page.size), filter);
         return new PublicResult<>(PublicResultConstant.SUCCESS, res);
     }
+
+    @Pass
+    @ApiOperation(value = "获取订单详情", notes = "小程序")
+    @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
+    public PublicResult<Order> order(@PathVariable String key) throws Exception {
+       Order o= _orderService.selectById(key);
+       if(o==null)return  new PublicResult<Order>(PublicResultConstant.FAILED,null);
+        return new PublicResult<>(PublicResultConstant.SUCCESS, o);
+    }
 }

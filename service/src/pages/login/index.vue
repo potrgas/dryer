@@ -1,7 +1,8 @@
 <template>
   <div class="box">
     <van-field id="userName" @change="inputValue" :value="model.userName" label="用户名" placeholder="请输入用户名" />
-    <van-field id="password" @change="inputValue" :value="model.password" type="password" label="密码" :border="false" placeholder="请输入密码" />
+    <van-field id="password" @change="inputValue" :value="model.password" type="password" label="密码" :border="false"
+      placeholder="请输入密码" />
     <van-button @click="login" type="primary">登陆</van-button>
   </div>
 
@@ -9,32 +10,58 @@
 
 <script>
 // Use Vuex
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 import { get, post } from "@/utils/api";
+import Toast from "../../../static/vant/toast/toast";
 export default {
   data() {
     return {
       model: {
-        userName: "",
-        password: ""
+        userName: "zhangsan",
+        password: "1234567"
       }
     };
   },
-
+  computed: {
+    ...mapGetters(["operater"])
+  },
   components: {},
 
   methods: {
+    ...mapMutations({
+      setOperater: "setOperater"
+    }),
     inputValue(e) {
       this.model[e.mp.target.id] = e.mp.detail;
     },
     login() {
-      var params = { url: "api/chat/login", data: this.model };
+      if (!this.model.userName || !this.model.password) {
+        Toast.fail("请完善必填信息");
+        return;
+      }
+      var params = {
+        url: "api/operater/login",
+        data: this.model
+      };
       post(params).then(r => {
+        if (r.result == "00000000") {
+          this.setOperater(r.data);
+          wx.switchTab({
+            url: "/pages/index/main"
+          });
+        }
         console.log(r);
       });
     }
   },
-  created() {}
+  created() {
+    console.log(this.operater);
+    if (this.operater.id) {
+      wx.switchTab({
+        url: "/pages/index/main"
+      });
+    }
+  }
 };
 </script>
 

@@ -1,6 +1,9 @@
 const mutations = {
-  set_userinfo(state, info) {
-    state.userInfo = info
+  setOperater(state, info) {
+    state.operater = info
+  },
+  setOrder(state, o) {
+    state.order = o
   }
 }
 

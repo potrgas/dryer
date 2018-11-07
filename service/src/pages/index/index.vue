@@ -6,11 +6,6 @@
         <van-button @click="scan" type="primary">开始扫码</van-button>
       </van-col>
     </van-row>
-    <van-dialog use-slot :asyncClose="true" :show="showBox" show-cancel-button confirm-button-open-type="getUserInfo"
-      @getuserinfo="auth" @getphonenumber="auth">
-      <van-field :value="account.userName" label="用户名" placeholder="请输入用户名" />
-      <van-field :value="account.password" type="password" label="密码" :border="false" placeholder="请输入密码" />
-    </van-dialog>
   </div>
 
 </template>
@@ -42,12 +37,14 @@ export default {
       wx.scanCode({
         onlyFromCamera: true,
         success(res) {
-          console.log(res);
+          if (res && res.result) {
+            this.setOrder(res.result);
+          }
         }
       });
     },
     ...mapMutations({
-      set_userInfo: "set_userinfo"
+      setOrder: "setOrder"
     })
   },
   created() {}

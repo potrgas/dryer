@@ -19,13 +19,11 @@
         <van-field :value="currentOrder.customerName" required readonly label="姓名" placeholder="请输入姓名" />
         <van-field :value="currentOrder.mobile" required readonly label="联系电话" placeholder="请输入联系电话" />
         <van-field :value="currentOrder.address" required readonly label="取件地址" placeholder="请输入取件地址" />
-        <van-row>
-          <div class="boxshow">
-            客服识别用二维码（待取状态显示）
-          </div>
+        <van-row v-if="currentOrder.orderState==0" >
+            <canvas class='boxshow' canvas-id='canvas' bindlongtap='save'></canvas>
         </van-row>
         <van-row>
-          <van-col span="8" offset="8">
+          <van-col v-if="currentOrder.orderState==3" span="8" offset="8">
             <van-button @click="gotomy" type="primary">确认接收</van-button>
           </van-col>
         </van-row>
@@ -37,6 +35,7 @@
 <script>
 // Use Vuex
 import { mapGetters } from "vuex";
+import QRCode from "@/utils/weapp-qrcode";
 export default {
   data() {
     return {};
@@ -47,10 +46,28 @@ export default {
     ...mapGetters(["currentOrder"])
   },
   methods: {
+    buildQrcode(order) {
+      //传入wxml中二维码canvas的canvas-id
+      var qrcode = new QRCode("canvas", {
+        // usingIn: this,
+        text: order.id,
+        width: 150,
+        height: 150,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    },
     gotomy() {
       wx.switchTab({
         url: "../my/main"
       });
+    }
+  },
+  mounted() {
+    console.log(this.currentOrder);
+    if (this.currentOrder) {
+      this.buildQrcode(this.currentOrder);
     }
   },
   created() {}
