@@ -3,7 +3,7 @@
     <div class="scan"></div>
     <van-row>
       <van-col span="12" offset="8">
-        <van-button  type="primary">开始扫码</van-button>
+        <van-button @click="scan" type="primary">开始扫码</van-button>
       </van-col>
     </van-row>
     <van-dialog use-slot :asyncClose="true" :show="showBox" show-cancel-button confirm-button-open-type="getUserInfo"
@@ -37,36 +37,18 @@ export default {
   components: {},
 
   methods: {
-    ...mapMutations({
-      set_userInfo: "set_userinfo"
-    }),
-    onSelectRadio(e) {
-      this.customer.radio = e.currentTarget.dataset.name;
-    },
-    onSelectType(e) {
-      this.customer.type = e.currentTarget.dataset.name;
-    },
-    onClose() {
-      this.showBox = false;
-    },
-    auth(source) {
-      console.log(source);
-      var mo = source.target.userInfo;
-      this.set_userInfo(mo);
-      this.customer.name = mo.nickName;
-      this.customer.mobile = "1181651";
-      this.customer.address = mo.nickName;
-      this.showBox = false;
-    },
-    bindViewTap() {
-      const url = "../logs/main";
-      wx.navigateTo({
-        url
+    scan() {
+      // 只允许从相机扫码
+      wx.scanCode({
+        onlyFromCamera: true,
+        success(res) {
+          console.log(res);
+        }
       });
     },
-    clickHandle(msg, ev) {
-      console.log("clickHandle:", msg, ev);
-    }
+    ...mapMutations({
+      set_userInfo: "set_userinfo"
+    })
   },
   created() {}
 };
@@ -76,6 +58,7 @@ export default {
 .box {
   padding: 2%;
 }
+
 .scan {
   width: 80%;
   height: 300px;

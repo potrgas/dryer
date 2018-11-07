@@ -19,6 +19,10 @@ public interface PermissionConst {
         public static  final  String list="operation:show";
         public  static  class _staff{
             public static  final  String list="staff:list";
+            public static  final  String modify="staff:modify";
+            public static  final  String delete="staff:delete";
+            public static  final  String batch="staff:batch";
+            public static  final  String first="staff:first";
         }
         public  static  class  _pickup{
             public static  final  String list="pickup:list";

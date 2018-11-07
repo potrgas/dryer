@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/login/main",
     "pages/index/main",
     "pages/my/main",
     "pages/buy/main",
@@ -11,11 +12,13 @@
     "list": [{
       "pagePath": "pages/index/main",
       "text": "首页",
-      "iconPath": "static/images/left.png"
+      "iconPath": "static/images/g.png",
+      "selectedIconPath": "static/images/g1.png"
     }, {
       "pagePath": "pages/my/main",
       "text": "我的",
-      "iconPath": "static/images/left.png"
+      "iconPath": "static/images/my.png",
+      "selectedIconPath": "static/images/my-s.png"
     }]
   },
   "window": {
