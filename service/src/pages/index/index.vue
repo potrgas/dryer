@@ -32,20 +32,27 @@ export default {
   components: {},
 
   methods: {
+    ...mapMutations({
+      set_order: "set_order"
+    }),
     scan() {
+      var _ = this;
+      console.log(1);
       // 只允许从相机扫码
       wx.scanCode({
         onlyFromCamera: true,
         success(res) {
+          console.log(res);
           if (res && res.result) {
-            this.setOrder(res.result);
+            console.log(2);
+            _.set_order(res.result);
+            wx.navigateTo({
+              url: "../details/main"
+            });
           }
         }
       });
-    },
-    ...mapMutations({
-      setOrder: "setOrder"
-    })
+    }
   },
   created() {}
 };

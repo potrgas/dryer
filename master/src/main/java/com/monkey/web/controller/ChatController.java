@@ -182,8 +182,8 @@ public class ChatController {
     @Pass
     @ApiOperation(value = "获取订单详情", notes = "小程序")
     @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
-    public PublicResult<Order> order(@PathVariable String key) throws Exception {
-       Order o= _orderService.selectById(key);
+    public PublicResult<Order> order(@PathVariable String id) throws Exception {
+       Order o= _orderService.selectById(id);
        if(o==null)return  new PublicResult<Order>(PublicResultConstant.FAILED,null);
         return new PublicResult<>(PublicResultConstant.SUCCESS, o);
     }

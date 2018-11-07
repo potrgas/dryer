@@ -2,7 +2,7 @@ const mutations = {
   setOperater(state, info) {
     state.operater = info
   },
-  setOrder(state, o) {
+  set_order(state, o) {
     state.order = o
   }
 }
