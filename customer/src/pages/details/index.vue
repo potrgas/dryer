@@ -22,11 +22,6 @@
         <van-row v-if="currentOrder.orderState==0" >
             <canvas class='boxshow' canvas-id='canvas' bindlongtap='save'></canvas>
         </van-row>
-        <van-row>
-          <van-col v-if="currentOrder.orderState==3" span="8" offset="8">
-            <van-button @click="gotomy" type="primary">确认接收</van-button>
-          </van-col>
-        </van-row>
       </van-cell-group>
     </van-row>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <van-cell-group>
-      <van-cell v-for="item in list" :key="item.id" :value="item.orderState==0?'待烘干':(item.orderState==1?'待取回':'已取回')"
+      <van-cell v-for="item in list" :key="item.id" :value="item.orderState==0?'待取':(item.orderState==1?'待烘干':(item.orderState==3?'待取回':'完成'))"
        @click="gotodetail(item)" :icon="item.dryType==1?'shop':(item.dryType==2?'info-o':'like-o')" is-link >
         <view slot="title">
           <span class="van-cell-text">{{item.creationTime}}</span>
