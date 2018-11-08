@@ -45,6 +45,7 @@ public class ChatController {
     ICustomerOrderService _customerOrderService;
     @Autowired
     IChargeorderService _chargeOrderService;
+
     @Pass
     @ApiOperation(value = "小程序解密", notes = "小程序")
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
@@ -169,7 +170,15 @@ public class ChatController {
     public PublicResult<Page<CustomerOrder>> orders(@RequestBody PagedAndFilterInputDto page) throws Exception {
         EntityWrapper<CustomerOrder> filter = new EntityWrapper<>();
         String openId = (String) page.where.get("openId");
-        filter.eq("openId", openId);
+        Integer oId = (Integer) page.where.get("operaterId");
+        if (openId != null && !openId.isEmpty()) {
+            filter.eq("openId", openId);
+        }
+        if (oId != null && oId!=0) {
+            filter.eq("operaterId", oId);
+        }
+        if ((openId==null||openId.isEmpty())&&(oId==null||oId==0))
+            return new PublicResult<Page<CustomerOrder>>(PublicResultConstant.NORESULTS, null);
         Page<CustomerOrder> res = _customerOrderService.selectPage(new Page<>(page.index, page.size), filter);
         return new PublicResult<>(PublicResultConstant.SUCCESS, res);
     }
@@ -178,16 +187,17 @@ public class ChatController {
     @ApiOperation(value = "获取订单详情", notes = "小程序")
     @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
     public PublicResult<CustomerOrder> order(@PathVariable String id) throws Exception {
-        CustomerOrder o= _customerOrderService.selectById(id);
-       if(o==null)return  new PublicResult<CustomerOrder>(PublicResultConstant.FAILED,null);
+        CustomerOrder o = _customerOrderService.selectById(id);
+        if (o == null) return new PublicResult<CustomerOrder>(PublicResultConstant.FAILED, null);
         return new PublicResult<>(PublicResultConstant.SUCCESS, o);
     }
+
     @Pass
     @ApiOperation(value = "更新订单进度", notes = "小程序")
     @RequestMapping(value = "/order/{id}/{state}", method = RequestMethod.PUT)
-    public PublicResult<CustomerOrder> update(@PathVariable String id,@PathVariable Integer state) throws Exception {
-        CustomerOrder o= _customerOrderService.selectById(id);
-        if(o==null)return  new PublicResult<CustomerOrder>(PublicResultConstant.FAILED,null);
+    public PublicResult<CustomerOrder> update(@PathVariable String id, @PathVariable Integer state) throws Exception {
+        CustomerOrder o = _customerOrderService.selectById(id);
+        if (o == null) return new PublicResult<CustomerOrder>(PublicResultConstant.FAILED, null);
         o.setOrderState(state);
         _customerOrderService.updateById(o);
         return new PublicResult<>(PublicResultConstant.SUCCESS, o);
