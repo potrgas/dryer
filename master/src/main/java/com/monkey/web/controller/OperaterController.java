@@ -70,17 +70,14 @@ public class OperaterController {
         Operater o = new Operater();
         o.setAccount(model.account);
         o.setOpenId(model.openId);
-
-        if (model.id == null||model.id==0) {
+        o.setId(model.id);
+        if (!model.password.isEmpty()) {
             String pass = BCrypt.hashpw(model.password, BCrypt.gensalt());
             o.setPassword(pass);
-        }else {
-            o.setId(model.id);
         }
         Boolean r = _operaterService.insertOrUpdate(o);
         return new PublicResult<>(PublicResultConstant.SUCCESS, r);
     }
-
     @Log(description = "运维接口:/删除运维")
     @ApiOperation(value = "删除运维", notes = "运维人员")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
