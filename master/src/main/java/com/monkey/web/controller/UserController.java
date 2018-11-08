@@ -6,14 +6,12 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.monkey.application.Controls.IRoleService;
 import com.monkey.application.Controls.IUserService;
 import com.monkey.application.Controls.dtos.CreateUserInput;
-import com.monkey.application.Payfor.IPayforService;
 import com.monkey.application.dtos.PagedAndFilterInputDto;
 import com.monkey.common.base.PermissionConst;
 import com.monkey.common.base.PublicResult;
 import com.monkey.common.base.PublicResultConstant;
 import com.monkey.common.util.ComUtil;
 import com.monkey.core.dtos.UserDto;
-import com.monkey.core.entity.Payfor;
 import com.monkey.core.entity.User;
 import com.monkey.web.annotation.CurrentUser;
 import com.monkey.web.annotation.Log;
@@ -41,8 +39,6 @@ public class UserController {
     IUserService _userService;
     @Autowired
     IRoleService _roleService;
-    @Autowired
-    IPayforService _payforService;
 
     @ApiOperation(value = "获取用户列表", notes = "用户列表")
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -76,14 +72,8 @@ public class UserController {
         c.setAccount(u.getAccount());
         c.setCreationTime(u.getCreationTime());
         List all = _roleService.getAllPermissions();
-        List<Payfor> ps = _payforService.selectList(new EntityWrapper<>());
         Boolean canBack = false;
-        if (ps.size() > 0) {
-            Payfor p = ps.get(0);
-            if (p != null) {
-                canBack = !p.getCardUrl().isEmpty();
-            }
-        }
+
         UserOutPut op = new UserOutPut(c, u.getRoles(), all, u.getPermissions(), canBack);
         PublicResult r = new PublicResult<>(PublicResultConstant.SUCCESS, op);
         return r;

@@ -1,11 +1,11 @@
 <template>
-  <div  @click="clickHandle('test click', $event)">
+  <div >
 
     <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl"
+      <img class="userinfo-avatar" v-if="operater.avatarUrl" :src="operater.avatarUrl"
        background-size="cover" />
       <div class="userinfo-nickname">
-         {{userInfo.nickName}}
+         {{operater.account}}
       </div>
     </div>
     <van-cell-group>
@@ -25,34 +25,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["userInfo"])
+    ...mapGetters(["operater"])
   },
   components: {},
 
-  methods: {
-    bindViewTap() {
-      const url = "../logs/main";
-      wx.navigateTo({
-        url
-      });
-    },
-    getUserInfo() {
-      // 调用登录接口
-      wx.login({
-        success: () => {
-          wx.getUserInfo({
-            success: res => {
-              console.log(res);
-              this.userInfo = res.userInfo;
-            }
-          });
-        }
-      });
-    },
-    clickHandle(msg, ev) {
-      console.log("clickHandle:", msg, ev);
-    }
-  },
+  methods: {},
   created() {}
 };
 </script>

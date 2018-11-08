@@ -1,15 +1,11 @@
 <template>
   <div class="box">
     <van-cell-group>
-      <van-cell value="内容" icon="shop" is-link>
+      <van-cell v-for="item in list" :key="item.id" :value="item.orderState==0?'待取':(item.orderState==1?'待烘干':(item.orderState==3?'待取回':'完成'))"
+       @click="gotodetail(item)" :icon="item.dryType==1?'shop':(item.dryType==2?'info-o':'like-o')" is-link >
         <view slot="title">
-          <span class="van-cell-text">单元格</span>
-          <van-tag type="danger">标签</van-tag>
+          <span class="van-cell-text">{{item.creationTime}}</span>
         </view>
-      </van-cell>
-      <van-cell title="单元格" icon="location" is-link />
-      <van-cell title="单元格" border="false">
-        <van-icon slot="right-icon" name="search" class="van-cell__right-icon" />
       </van-cell>
     </van-cell-group>
   </div>
@@ -17,50 +13,50 @@
 </template>
 
 <script>
+import { post, get } from "@/utils/api";
+import { mapMutations } from "vuex";
 // Use Vuex
 export default {
   data() {
     return {
-      customer: {},
-      radio: "1",
-      userInfo: {}
+      total: 0,
+      params: {
+        index: 1,
+        size: 10,
+        where: {}
+      },
+      list: []
     };
   },
 
   components: {},
 
   methods: {
-    onClick(e) {
-      this.radio = e;
-      console.log(e);
-    },
-    onChange() {
-      console.log(2);
-    },
-    bindViewTap() {
-      const url = "../logs/main";
-      wx.navigateTo({
-        url
-      });
-    },
-
-    getUserInfo() {
-      // 调用登录接口
-      wx.login({
-        success: () => {
-          wx.getUserInfo({
-            success: res => {
-              this.userInfo = res.userInfo;
-            }
-          });
+    ...mapMutations({
+      set_currentOrder: "set_currentOrder"
+    }),
+    loadList() {
+      var obj = wx.getStorageSync("openId");
+      this.params.where = { openId: obj };
+      let p = { url: "api/chat/orders", data: this.params };
+      post(p).then(r => {
+        if (r.result == "00000000") {
+          this.list = r.data.records;
+          this.total = r.data.total;
         }
       });
     },
-    clickHandle(msg, ev) {
-      console.log("clickHandle:", msg, ev);
+    gotodetail(item) {
+      this.set_currentOrder(item);
+      const url = "../details/main";
+      wx.navigateTo({
+        url
+      });
     }
   },
-
+  mounted() {
+    this.loadList();
+  },
   created() {}
 };
 </script>

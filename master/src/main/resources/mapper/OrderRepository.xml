@@ -5,22 +5,13 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.monkey.core.entity.Order">
         <id column="id" property="id"/>
-        <result column="productName" property="productName"/>
-        <result column="productId" property="productId"/>
         <result column="price" property="price"/>
-        <result column="wechatOrder" property="wechatOrder"/>
-        <result column="deviceNum" property="deviceNum"/>
-        <result column="pointId" property="pointId"/>
         <result column="creationTime" property="creationTime"/>
         <result column="creatorUserId" property="creatorUserId"/>
         <result column="orderState" property="orderState"/>
         <result column="payState" property="payState"/>
         <result column="payType" property="payType"/>
         <result column="deviceId" property="deviceId"/>
-        <result column="deviceName" property="deviceName"/>
-        <result column="deviceType" property="deviceType"/>
-        <result column="pointName" property="pointName"/>
-        <result column="backNum" property="backNum"/>
 
     </resultMap>
 
@@ -161,23 +152,7 @@
         GROUP BY
         payType
     </select>
-    <select id="getPayforByOrder" resultType="com.monkey.core.entity.Payfor">
-      SELECT
-	*
-FROM
-	sale_payfor
-WHERE
-	wechatpayId = #{appId}
-	AND wechatpayAgent = #{mch_id}
-    </select>
-    <select id="getPayforByAppId" resultType="com.monkey.core.entity.Payfor">
-        SELECT top 1
-        *
-        FROM
-        sale_payfor
-        WHERE
-        alipayId = #{appId}  LIMIT 0,1
-    </select>
+
     <select id="getDeviceSaleStatical" resultType="com.monkey.core.dtos.DeviceSaleStatical">
         SELECT
         pointName,

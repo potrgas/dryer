@@ -65,7 +65,6 @@ public class OperaterController {
         return new PublicResult<>(PublicResultConstant.SUCCESS, m);
     }
 
-
     @Log(description = "点位接口:/添加或编辑运维人员")
     @ApiOperation(value = "添加或编辑运维人员", notes = "运维人员")
     @RequestMapping(method = RequestMethod.PUT)

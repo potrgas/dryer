@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.monkey.core.dtos.*;
 import com.monkey.core.entity.Order;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.monkey.core.entity.Payfor;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -31,9 +30,7 @@ public interface OrderRepository extends BaseMapper<Order> {
 
     List<SalePercentDto> getPayTypePercent(@Param("tenantId") Integer tenantId,@Param("start") Date start, @Param("end") Date end);
 
-    Payfor getPayforByOrder(@Param("appId") String appId, @Param("mch_id") String mch_id);
 
-    Payfor getPayforByAppId(@Param("appId") String appId);
     List<DeviceSaleStatical> getDeviceSaleStatical(@Param("tenantId") Integer tenantId, Pagination page, @Param("deviceName") String deviceName, @Param("pointName") String pointName, @Param("start") Date start, @Param("end") Date end);
 
     List<ProductSaleStatical> getProductSaleStatical(Integer tenantId, Pagination page,@Param("productName") String productName, @Param("deviceName") String deviceName, @Param("start") Date start, @Param("end") Date end);

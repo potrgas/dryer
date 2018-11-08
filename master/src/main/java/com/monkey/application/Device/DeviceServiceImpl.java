@@ -8,14 +8,10 @@ import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.monkey.core.dtos.ProductDto;
 import com.monkey.core.entity.Device;
-import com.monkey.core.entity.DeviceProduct;
-import com.monkey.core.mapper.DeviceProductRepository;
 import com.monkey.core.mapper.DeviceRepository;
-import com.monkey.web.controller.dtos.DeviceProductInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

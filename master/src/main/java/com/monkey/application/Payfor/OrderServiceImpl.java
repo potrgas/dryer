@@ -25,13 +25,11 @@ import com.monkey.core.mapper.ChargeorderRepository;
 import com.monkey.core.mapper.OrderRepository;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.monkey.core.mapper.PayforRepository;
 import com.monkey.core.mapper.ProductRepository;
 import com.monkey.web.aspect.WebSocketServer;
 import com.monkey.web.controller.dtos.ChargeOrderInput;
 import com.monkey.web.controller.dtos.OrderInput;
 import com.monkey.web.controller.dtos.StaticalInput;
-import com.monkey.web.controller.dtos.WebSocketMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +58,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
     @Autowired
     ProductRepository _productRepository;
     @Autowired
-    PayforRepository _payforRepository;
-    @Autowired
     ISerialService _serialService;
     protected static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
@@ -84,8 +80,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
             // 回调接口
             //组装参数，用户生成统一下单接口的签名
             SortedMap<Object, Object> packageParams = new TreeMap<Object, Object>();
-            packageParams.put("appid", PayConfig.APPID);
-            packageParams.put("mch_id", PayConfig.SHOPID);
+            packageParams.put("appid", PayConfig.WX_APPID);
+            packageParams.put("mch_id", PayConfig.WX_SHOPID);
             packageParams.put("nonce_str", nonce_str);
             packageParams.put("body", body);
             packageParams.put("out_trade_no",input.getId());//商户订单号
@@ -95,12 +91,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
             packageParams.put("trade_type", "JSAPI");//支付方式
             packageParams.put("openid", input.getOpenId());
 
-            String sign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.PAYFOR);
+            String sign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.WX_PAYFOR);
 
             //拼接统一下单接口使用的xml数据，要将上一步生成的签名一起拼接进去
-            String xml = "<xml>" + "<appid>" + PayConfig.APPID + "</appid>"
+            String xml = "<xml>" + "<appid>" + PayConfig.WX_APPID + "</appid>"
                     + "<body><![CDATA[" + body + "]]></body>"
-                    + "<mch_id>" + PayConfig.SHOPID + "</mch_id>"
+                    + "<mch_id>" + PayConfig.WX_SHOPID + "</mch_id>"
                     + "<nonce_str>" + nonce_str + "</nonce_str>"
                     + "<notify_url>" + PayConfig.Notify_Url + "</notify_url>"
                     + "<openid>" + input.getOpenId() + "</openid>"
@@ -114,7 +110,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
             System.out.println("调试模式_统一下单接口 请求XML数据：" + xml);
 
             //调用统一下单接口，并接受返回的结果
-            String result =HttpUtil.postData(PayConfig.PAYURL,xml);
+            String result =HttpUtil.postData(PayConfig.WX_PAYURL,xml);
             //PayUtil.httpRequest(WxPayConfig.pay_url, "POST", xml);
             System.out.println("调试模式_统一下单接口 返回XML数据：" + result);
             // 将解析结果存储在HashMap中
@@ -131,12 +127,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
                 Long timeStamp = System.currentTimeMillis() / 1000;
                 response.put("timeStamp", timeStamp + "");//这边要将返回的时间戳转化成字符串，不然小程序端调用wx.requestPayment方法会报签名错误
                 //拼接签名需要的参数
-                String stringSignTemp = "appId=" + PayConfig.APPID + "&nonceStr=" + nonce_str + "&package=prepay_id=" + prepay_id+ "&signType=MD5&timeStamp=" + timeStamp;
+                String stringSignTemp = "appId=" + PayConfig.WX_APPID + "&nonceStr=" + nonce_str + "&package=prepay_id=" + prepay_id+ "&signType=MD5&timeStamp=" + timeStamp;
                 //再次签名，这个签名用于小程序端调用wx.requesetPayment方法
-                String paySign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.PAYFOR);
+                String paySign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.WX_PAYFOR);
                 response.put("paySign", paySign);
             }
-            response.put("appid", PayConfig.APPID);
+            response.put("appid", PayConfig.WX_APPID);
             return response;
 
         }catch(Exception e){
@@ -162,8 +158,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
             // 回调接口
             //组装参数，用户生成统一下单接口的签名
             SortedMap<Object, Object> packageParams = new TreeMap<Object, Object>();
-            packageParams.put("appid", PayConfig.APPID);
-            packageParams.put("mch_id", PayConfig.SHOPID);
+            packageParams.put("appid", PayConfig.WX_APPID);
+            packageParams.put("mch_id", PayConfig.WX_SHOPID);
             packageParams.put("nonce_str", nonce_str);
             packageParams.put("body", body);
             packageParams.put("out_trade_no",input.getId());//商户订单号
@@ -173,12 +169,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
             packageParams.put("trade_type", "JSAPI");//支付方式
             packageParams.put("openid", input.getOpenId());
 
-            String sign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.PAYFOR);
+            String sign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.WX_PAYFOR);
 
             //拼接统一下单接口使用的xml数据，要将上一步生成的签名一起拼接进去
-            String xml = "<xml>" + "<appid>" + PayConfig.APPID + "</appid>"
+            String xml = "<xml>" + "<appid>" + PayConfig.WX_APPID + "</appid>"
                     + "<body><![CDATA[" + body + "]]></body>"
-                    + "<mch_id>" + PayConfig.SHOPID + "</mch_id>"
+                    + "<mch_id>" + PayConfig.WX_SHOPID + "</mch_id>"
                     + "<nonce_str>" + nonce_str + "</nonce_str>"
                     + "<notify_url>" + PayConfig.Charge_Notify_Url + "</notify_url>"
                     + "<openid>" + input.getOpenId() + "</openid>"
@@ -191,7 +187,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
 
             System.out.println("调试模式_统一下单接口 请求XML数据：" + xml);
             //调用统一下单接口，并接受返回的结果
-            String result =HttpUtil.postData(PayConfig.PAYURL,xml);
+            String result =HttpUtil.postData(PayConfig.WX_PAYURL,xml);
             //PayUtil.httpRequest(WxPayConfig.pay_url, "POST", xml);
             System.out.println("调试模式_统一下单接口 返回XML数据：" + result);
             // 将解析结果存储在HashMap中
@@ -207,12 +203,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
                 Long timeStamp = System.currentTimeMillis() / 1000;
                 response.put("timeStamp", timeStamp + "");//这边要将返回的时间戳转化成字符串，不然小程序端调用wx.requestPayment方法会报签名错误
                 //拼接签名需要的参数
-                String stringSignTemp = "appId=" + PayConfig.APPID + "&nonceStr=" + nonce_str + "&package=prepay_id=" + prepay_id+ "&signType=MD5&timeStamp=" + timeStamp;
+                String stringSignTemp = "appId=" + PayConfig.WX_APPID + "&nonceStr=" + nonce_str + "&package=prepay_id=" + prepay_id+ "&signType=MD5&timeStamp=" + timeStamp;
                 //再次签名，这个签名用于小程序端调用wx.requesetPayment方法
-                String paySign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.PAYFOR);
+                String paySign = PayToolUtil.createSign("UTF-8", packageParams, PayConfig.WX_PAYFOR);
                 response.put("paySign", paySign);
             }
-            response.put("appid", PayConfig.APPID);
+            response.put("appid", PayConfig.WX_APPID);
             return response;
 
         }catch(Exception e){
@@ -260,16 +256,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
     /*微信支付*/
     @Override
     public String weixinPay(Order input) throws Exception {
-        EntityWrapper ew = new EntityWrapper();
-        List<Payfor> list = _payforRepository.selectList(ew);
-        Payfor p = list.get(0);
-        if (list.isEmpty() || p == null) throw new Exception("该商户支付信息不存在");
+
         String out_trade_no = input.getId(); //订单号 （调整为自己的生产逻辑）
         // 账号信息
-        String appid = p.getWechatpayId();  // appid
+        String appid = PayConfig.WX_APPID ;// appid
         //String appsecret = PayConfigUtil.APP_SECRET; // appsecret
-        String mch_id = p.getWechatpayAgent(); // 商业号
-        String key = p.getWechatpayKey(); // key
+        String mch_id = PayConfig.WX_SHOPID; // 商业号
+        String key = PayConfig.WX_SECRIT; // key
 
         String currTime = PayToolUtil.getCurrTime();
         String strTime = currTime.substring(8, currTime.length());
@@ -311,14 +304,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
      * 阿里云支付*/
     @Override
     public String aliPay(Order product) throws Exception {
-        EntityWrapper ew = new EntityWrapper();
-        List<Payfor> list = _payforRepository.selectList(ew);
-        Payfor p = list.get(0);
-        if (list.isEmpty() || p == null) throw new Exception("该商户支付信息不存在");
         String out_trade_no = product.getId(); //订单号 （调整为自己的生产逻辑）
-
-        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", p.getAlipayId(), p.getAlipayKey(),
-                "json", "UTF-8", p.getAlipayAgent(), "RSA2"); //获得初始化的AlipayClient
+    //todo 配置阿里支付的参数
+        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", PayConfig.AL_APPID, PayConfig.AL_KEY,
+                "json", "UTF-8", PayConfig.AL_AGENT, "RSA2"); //获得初始化的AlipayClient
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();//创建API对应的request类
         Map<String, String> r = new HashMap<>();
         r.put("out_trade_no", product.getId());
@@ -339,13 +328,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
     @Override
     public String aliback(Order input) throws Exception {
         EntityWrapper ew = new EntityWrapper();
-        List<Payfor> list = _payforRepository.selectList(ew);
-        Payfor p = list.get(0);
-        if (list.isEmpty() || p == null) throw new Exception("该商户支付信息不存在");
+
         String out_trade_no = input.getId(); //订单号 （调整为自己的生产逻辑）
 
-        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", p.getAlipayId(), p.getAlipayKey(),
-                "json", "UTF-8", p.getAlipayAgent(), "RSA2");
+        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", PayConfig.AL_APPID, PayConfig.AL_KEY,
+                "json", "UTF-8", PayConfig.AL_AGENT, "RSA2");
         //获得初始化的AlipayClient
         AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();//创建API对应的request类
         Map<String, String> r = new HashMap<>();
@@ -418,15 +405,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
         return result;
     }
 
-    @Override
-    public Payfor getPayforByOrder(String appId, String mch_id) {
-        return _orderRepository.getPayforByOrder(appId, mch_id);
-    }
 
-    @Override
-    public Payfor getPayforByAppId(String appId) {
-        return _orderRepository.getPayforByAppId(appId);
-    }
 
     @Override
     public void updateOrderStatte(String orderNum, Integer orderState, Integer payState, String backNum) {
@@ -438,15 +417,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
      * */
     @Override
     public String weixinBack(Order input) throws Exception {
-        EntityWrapper ew = new EntityWrapper();
-        List<Payfor> list = _payforRepository.selectList(ew);
-        Payfor p = list.get(0);
-        if (list.isEmpty() || p == null) throw new Exception("该商户支付信息不存在");
         String out_trade_no = input.getId(); //订单号 （调整为自己的生产逻辑）
         // 账号信息
-        String appid = p.getWechatpayId();  // appid
-        String mch_id = p.getWechatpayAgent(); // 商业号
-        String key = p.getWechatpayKey(); // key
+        String appid =PayConfig.WX_APPID;  // appid
+        String mch_id = PayConfig.WX_SHOPID; // 商业号
+        String key = PayConfig.WX_PAYFOR; // key
         String currTime = PayToolUtil.getCurrTime();
         String strTime = currTime.substring(8, currTime.length());
         String strRandom = PayToolUtil.buildRandom(4) + "";
@@ -467,7 +442,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderRepository, Order> implem
         packageParams.put("sign", sign);
 
         String requestXML = PayToolUtil.getRequestXml(packageParams);
-        String resXml = HttpUtil.back(requestXML, p);
+        String resXml = HttpUtil.back(requestXML);
         return resXml;
     }
 

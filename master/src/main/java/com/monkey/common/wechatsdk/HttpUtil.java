@@ -1,6 +1,5 @@
 package com.monkey.common.wechatsdk;
 
-import com.monkey.core.entity.Payfor;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -121,17 +120,18 @@ public class HttpUtil {
         return result;
     }
 
-    public static String back(String xml,Payfor payfor) throws Exception{
+    public static String back(String xml) throws Exception{
         String result="";
+        String cardUrl="";
         KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-        if(payfor.getCardUrl().isEmpty())return  result;
-        FileInputStream instream = new FileInputStream(new File(payfor.getCardUrl()));//放退款证书的路径
+        if(cardUrl.isEmpty())return  result;
+        FileInputStream instream = new FileInputStream(new File(cardUrl));//放退款证书的路径
         try {
-            keyStore.load(instream, payfor.getWechatpayAgent().toCharArray());
+            keyStore.load(instream, "payagent".toCharArray());
         } finally {
             instream.close();
         }
-        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, payfor.getWechatpayAgent().toCharArray()).build();
+        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, "payagent".toCharArray()).build();
         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                 sslcontext,
                 new String[] { "TLSv1" },
