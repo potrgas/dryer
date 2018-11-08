@@ -7,11 +7,9 @@ import com.monkey.application.Payfor.IOrderService;
 import com.monkey.application.customer.ICustomerService;
 import com.monkey.application.dtos.PagedAndFilterInputDto;
 import com.monkey.common.base.Constant;
-import com.monkey.common.base.PermissionConst;
 import com.monkey.common.base.PublicResult;
 import com.monkey.common.base.PublicResultConstant;
 import com.monkey.common.util.AesCbcUtil;
-import com.monkey.common.util.ComUtil;
 import com.monkey.common.wechatsdk.HttpUtil;
 import com.monkey.core.entity.Chargeorder;
 import com.monkey.core.entity.Customer;
@@ -23,13 +21,11 @@ import com.monkey.web.controller.dtos.CustomerInfoDto;
 import com.monkey.web.controller.dtos.OrderInput;
 import com.monkey.web.controller.dtos.WechatCodeInput;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
