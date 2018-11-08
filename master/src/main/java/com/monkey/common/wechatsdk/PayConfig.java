@@ -36,4 +36,14 @@ public class PayConfig {
     public static final  String QY_CORPID = "ww480b7545345a38f7";
     public static final String QY_SECRET = "SjF1kHm8EZfb35rNPn8wiTt-iTrJPegpzXI14yHwseg";
     public static final String QY_SECRETA = "yKribg1WopTnC1vLrvFT5vObFXZVUou6XAtt8sqgiJc";
+
+    //小程序唯一标识   (在微信小程序管理后台获取)
+    public static final String MP_CUSTOMER_APPID = "wx3462f1fc533ebe71";
+    //小程序的 app secret (在微信小程序管理后台获取)
+    public static  String MP_CUSTOMER_SECRET = "a3f39a8d450d822d232eb9ae2c43fc78";
+
+    //小程序唯一标识   (在微信小程序管理后台获取)
+    public static final String MP_SERVICE_APPID = "wx3462f1fc533ebe71";
+    //小程序的 app secret (在微信小程序管理后台获取)
+    public static  String MP_SERVICE_SECRET = "a3f39a8d450d822d232eb9ae2c43fc78";
 }

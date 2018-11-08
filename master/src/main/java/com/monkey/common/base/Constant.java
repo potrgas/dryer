@@ -19,10 +19,7 @@ public class Constant {
     public static Set<String>  METHOD_URL_SET = new HashSet<>();
 
 
-    //小程序唯一标识   (在微信小程序管理后台获取)
-   public static String wxspAppid = "wx3462f1fc533ebe71";
-    //小程序的 app secret (在微信小程序管理后台获取)
-    public static  String wxspSecret = "a3f39a8d450d822d232eb9ae2c43fc78";
+
     //授权（必填）
     public static String grant_type = "authorization_code";
     /**

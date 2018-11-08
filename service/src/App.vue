@@ -7,8 +7,6 @@ export default {
     // logs.unshift(Date.now());
     // wx.setStorageSync("logs", logs);
     console.log("app created and cache logs by setStorageSync");
-    //登陆授权
-    tools.getopenId();
   }
 };
 </script>

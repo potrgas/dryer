@@ -13,6 +13,7 @@ import com.monkey.common.base.PublicResult;
 import com.monkey.common.base.PublicResultConstant;
 import com.monkey.common.util.AesCbcUtil;
 import com.monkey.common.wechatsdk.HttpUtil;
+import com.monkey.common.wechatsdk.PayConfig;
 import com.monkey.core.entity.Chargeorder;
 import com.monkey.core.entity.Customer;
 import com.monkey.core.entity.CustomerOrder;
@@ -54,7 +55,7 @@ public class ChatController {
         }
         //////////////// 1、向微信服务器 使用登录凭证 code 获取 session_key 和 openid ////////////////
         //请求参数
-        String params = "appid=" + Constant.wxspAppid + "&secret=" + Constant.wxspSecret + "&js_code=" + input.getCode() + "&grant_type=" + Constant.grant_type;
+        String params = "appid=" + PayConfig.MP_CUSTOMER_APPID + "&secret=" + PayConfig.MP_CUSTOMER_SECRET + "&js_code=" + input.getCode() + "&grant_type=" + Constant.grant_type;
         //发送请求
         String sr = HttpUtil.sendGet("https://api.weixin.qq.com/sns/jscode2session", params);
         //解析相应内容（转换成json对象）

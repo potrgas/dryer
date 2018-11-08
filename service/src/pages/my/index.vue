@@ -9,7 +9,7 @@
       </div>
     </div>
     <van-cell-group>
-      <van-cell  is-link url="../myorders/main"  icon="location" title="我的订单" border="false">
+      <van-cell :value="operater.orderCount+'条'"  is-link url="../myorders/main"  icon="location" title="我的订单" border="false">
         <van-icon slot="right-icon" name="search" class="van-cell__right-icon" />
       </van-cell>
     </van-cell-group>

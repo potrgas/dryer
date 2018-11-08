@@ -14,7 +14,7 @@
 
 <script>
 import { post, get } from "@/utils/api";
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 // Use Vuex
 export default {
   data() {
@@ -28,7 +28,9 @@ export default {
       list: []
     };
   },
-
+  computed: {
+    ...mapGetters(["operater"])
+  },
   components: {},
 
   methods: {
@@ -36,8 +38,7 @@ export default {
       set_currentOrder: "set_currentOrder"
     }),
     loadList() {
-      var obj = wx.getStorageSync("openId");
-      this.params.where = { openId: obj };
+      this.params.where = { operaterId: this.operater.id };
       let p = { url: "api/chat/orders", data: this.params };
       post(p).then(r => {
         if (r.result == "00000000") {
