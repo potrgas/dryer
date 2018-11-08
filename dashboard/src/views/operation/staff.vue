@@ -7,24 +7,16 @@
           <Form slot="filter" ref="queryForm" :label-width="70" label-position="left" inline>
             <Row :gutter="4">
               <Col span="18">
-              <FormItem label="姓名:">
-                <Input v-model="filters.productName" />
-              </FormItem>
-              <FormItem label="电话:">
-                <Input v-model="filters.productName" />
-              </FormItem>
               <FormItem label="账户:">
-                <Input v-model="filters.productName" />
+                <Input v-model="filters.account" />
               </FormItem>
               </Col>
               <Col span="6">
               <Button icon="ios-search" type="primary" size="large" @click="init" class="toolbar-btn">查找</Button>
-              <Button class="toolbar-btn"  @click="Create" icon="android-add" type="primary" size="large">添加</Button>
-              <Button  @click="batchDelete" type="primary" class="toolbar-btn" size="large">批量删除</Button>
               </Col>
             </Row>
           </Form>
-          <SaleTable ref="table" :filters="filters" :type="'product'" :columns="columns"></SaleTable>
+          <SaleTable ref="table" :filters="filters" :type="'operater'" :columns="columns"></SaleTable>
         </div>
       </Card>
     </Row>
@@ -38,7 +30,7 @@ import SaleTable from "@/components/saletable.vue";
 import AbpBase from "@/lib/abpbase";
 import PageRequest from "../../store/entities/page-request";
 import Util from "../../lib/util";
-import Product from "@/store/entities/product";
+import Operater from "@/store/entities/operater";
 import Modify from "./modify.vue";
 
 @Component({
@@ -47,20 +39,10 @@ import Modify from "./modify.vue";
     Modify
   }
 })
-export default class ProductC extends AbpBase {
+export default class OperaterControl extends AbpBase {
   filters: Object = {
-    productName: ""
+    account: ""
   };
-  p: any = {
-    modify: this.hasPermission("product:modify"),
-    delete: this.hasPermission("product:delete"),
-    list: this.hasPermission("product:list"),
-    first: this.hasPermission("product:first"),
-    batch: this.hasPermission("product:batch")
-  };
-  get cates() {
-    return this.$store.state.category.list;
-  }
   ModalShow: boolean = false;
   columns: Array<any> = [
     {
@@ -69,16 +51,19 @@ export default class ProductC extends AbpBase {
       align: "center"
     },
     {
-      title: "姓名",
-      key: "productName"
-    },
-    {
-      title: "电话",
-      key: "productNum"
+      title: "唯一标识",
+      key: "openId"
     },
     {
       title: "账户",
-      key: "productType"
+      key: "account"
+    },
+    {
+      title: "密码",
+      key: "",
+      render: (h: any, params: any) => {
+        return h("span", "*****");
+      }
     },
     {
       title: "操作",
@@ -90,8 +75,7 @@ export default class ProductC extends AbpBase {
           {
             props: {
               type: "primary",
-              size: "small",
-              disabled: !this.p.modify
+              size: "small"
             },
             style: {
               marginRight: "5px"
@@ -99,7 +83,7 @@ export default class ProductC extends AbpBase {
             on: {
               click: () => {
                 this.$store.dispatch({
-                  type: "product/get",
+                  type: "operater/get",
                   data: params.row.id
                 });
                 this.Modify();
@@ -109,74 +93,24 @@ export default class ProductC extends AbpBase {
           "编辑"
         );
 
-        var de = h(
-          "Button",
-          {
-            props: {
-              type: "error",
-              size: "small",
-              disabled: !this.p.delete
-            },
-            on: {
-              click: async () => {
-                this.$Modal.confirm({
-                  title: "删除提示",
-                  content: "确认要删除么",
-                  okText: "是",
-                  cancelText: "否",
-                  onOk: async () => {
-                    await this.$store.dispatch({
-                      type: "product/delete",
-                      data: params.row
-                    });
-                    await this.init();
-                  }
-                });
-              }
-            }
-          },
-          "删除"
-        );
-        var t = [ed, de];
+        var t = [ed];
         return h("div", t);
       }
     }
   ];
   Create() {
-    var u = new Product();
-    this.$store.commit("product/edit", u);
+    var u = new Operater();
+    this.$store.commit("operater/edit", u);
     this.ModalShow = true;
   }
   init() {
     var t: any = this.$refs.table;
     t.getpage();
   }
-  async batchDelete() {
-    var t: any = this.$refs.table;
-    if (t.selections) {
-      this.$Modal.confirm({
-        title: "删除提示",
-        content: `确认要删除${t.selections.length}条数据么`,
-        okText: "是",
-        cancelText: "否",
-        onOk: async () => {
-          await this.$store.dispatch({
-            type: "product/batch",
-            data: t.selections
-          });
-          await this.init();
-        }
-      });
-    }
-  }
+
   Modify() {
     this.ModalShow = true;
   }
-  async created() {
-    this.$store.dispatch({
-      type: "category/all",
-      data: {}
-    });
-  }
+  async created() {}
 }
 </script>

@@ -1,2 +1,2 @@
-const URL: string = "http://localhost:8081/"
+const URL: string = "https://dryerservice.leftins.com/"
 export default URL;

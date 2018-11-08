@@ -48,7 +48,6 @@ public class OperaterController {
 
     @ApiOperation(value = "获取运维人员列表", notes = "运维人员")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    @RequiresPermissions(value = {PermissionConst._operation._staff.list})
     public PublicResult<Page<Operater>> devices(@RequestBody PagedAndFilterInputDto page) throws Exception {
         EntityWrapper<Operater> filter = new EntityWrapper<>();
         filter = ComUtil.genderFilter(filter, page.where);
@@ -59,7 +58,6 @@ public class OperaterController {
 
     @ApiOperation(value = "获取运维人员详情", notes = "运维人员")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @RequiresPermissions(value = {PermissionConst._operation._staff.first})
     public PublicResult<Operater> Point(@PathVariable Integer id) throws Exception {
         Operater m = _operaterService.selectById(id);
         return new PublicResult<>(PublicResultConstant.SUCCESS, m);
@@ -68,7 +66,6 @@ public class OperaterController {
     @Log(description = "点位接口:/添加或编辑运维人员")
     @ApiOperation(value = "添加或编辑运维人员", notes = "运维人员")
     @RequestMapping(method = RequestMethod.PUT)
-     @RequiresPermissions(value = {PermissionConst._operation._staff.modify})
     public PublicResult<Boolean> insert(@RequestBody OperaterInput model) throws Exception {
         Operater o = new Operater();
         o.setAccount(model.account);
@@ -87,7 +84,6 @@ public class OperaterController {
     @Log(description = "运维接口:/删除运维")
     @ApiOperation(value = "删除运维", notes = "运维人员")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @RequiresPermissions(value = {PermissionConst._operation._staff.delete})
     public PublicResult<Object> delete(@PathVariable Integer id) throws Exception {
         Boolean r = _operaterService.deleteById(id);
         return new PublicResult<>(PublicResultConstant.SUCCESS, r);
@@ -96,7 +92,6 @@ public class OperaterController {
     @Log(description = "运维接口:/批量删除运维")
     @ApiOperation(value = "批量删除运维", notes = "运维人员")
     @RequestMapping(value = "/batch", method = RequestMethod.POST)
-    @RequiresPermissions(value = {PermissionConst._operation._staff.batch})
     public PublicResult<Object> batchdelete(@RequestBody List<Integer> ids) throws Exception {
         Boolean r = _operaterService.deleteBatchIds(ids);
         return new PublicResult<>(PublicResultConstant.SUCCESS, r);

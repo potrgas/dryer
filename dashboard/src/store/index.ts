@@ -16,6 +16,7 @@ import order from "@/store/modules/order";
 import dash from "@/store/modules/dash";
 import category from "@/store/modules/category";
 import serial from "@/store/modules/serial";
+import operater from "@/store/modules/operater";
 const store: any = new Vuex.Store({
   state: {
     //
@@ -39,7 +40,8 @@ const store: any = new Vuex.Store({
     order,
     dash,
     category,
-    serial
+    serial,
+    operater
   }
 });
 
