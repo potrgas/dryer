@@ -58,7 +58,7 @@ public class NotifyController {
     ///插入流水表
     private void insertSerial(Order order, Integer type, String backOrder) {
         Serial s = new Serial();
-        s.setDeviceId(order.getDeviceId());
+        s.setDeviceNum(order.getDeviceNum());
         s.setOrder(order.getId());
         s.setPrice(10);
         s.setType(type);
@@ -112,7 +112,7 @@ public class NotifyController {
                 e.eq("wechatOrder", out_trade_no);
                 Order o = _orderService.selectOne(e);
                 //////////更新订单信息////////////////
-                _orderService.updateOrderStatte(out_trade_no, null, 2, back_id);
+                _orderService.updateOrderState(out_trade_no, null, 2, back_id);
 
                 insertSerial(o, 2, back_id);
                 // 向微信服务器发送确认信息，若不发送，微信服务器会间隔不同的时间调用回调方法
@@ -193,7 +193,7 @@ public class NotifyController {
                 e.eq("wechatOrder", out_trade_no);
                 Order o = _orderService.selectOne(e);
                 if (o != null) {
-                    _orderService.updateOrderStatte(out_trade_no, null, 1, null);
+                    _orderService.updateOrderState(out_trade_no, null, 1, null);
                     insertSerial(o, 1, "");
                     ///////////通知客户端修改状态/////////
                     String did = out_trade_no.split("_")[0];
@@ -342,7 +342,7 @@ public class NotifyController {
 
                 } else if (status.equals("TRADE_SUCCESS") || status.equals("TRADE_FINISHED")) {
                     // 如果状态是已经支付成功成功 更新状态
-                    _orderService.updateOrderStatte(outtradeno, null, 1, "");
+                    _orderService.updateOrderState(outtradeno, null, 1, "");
                     EntityWrapper e = new EntityWrapper();
                     e.eq("wechatOrder", outtradeno);
                     Order o = _orderService.selectOne(e);

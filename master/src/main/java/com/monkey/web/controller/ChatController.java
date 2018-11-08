@@ -3,6 +3,8 @@ package com.monkey.web.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.monkey.application.Payfor.IChargeorderService;
+import com.monkey.application.Payfor.ICustomerOrderService;
 import com.monkey.application.Payfor.IOrderService;
 import com.monkey.application.customer.ICustomerService;
 import com.monkey.application.dtos.PagedAndFilterInputDto;
@@ -13,13 +15,11 @@ import com.monkey.common.util.AesCbcUtil;
 import com.monkey.common.wechatsdk.HttpUtil;
 import com.monkey.core.entity.Chargeorder;
 import com.monkey.core.entity.Customer;
+import com.monkey.core.entity.CustomerOrder;
 import com.monkey.core.entity.Order;
 import com.monkey.web.annotation.Log;
 import com.monkey.web.annotation.Pass;
-import com.monkey.web.controller.dtos.ChargeOrderInput;
-import com.monkey.web.controller.dtos.CustomerInfoDto;
-import com.monkey.web.controller.dtos.OrderInput;
-import com.monkey.web.controller.dtos.WechatCodeInput;
+import com.monkey.web.controller.dtos.*;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +41,9 @@ public class ChatController {
     @Autowired
     private ICustomerService _customerService;
     @Autowired
-    IOrderService _orderService;
-
+    ICustomerOrderService _customerOrderService;
+    @Autowired
+    IChargeorderService _chargeOrderService;
     @Pass
     @ApiOperation(value = "小程序解密", notes = "小程序")
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
@@ -102,15 +103,12 @@ public class ChatController {
     @Log(description = "小程序:/客户下单操作")
     @ApiOperation(value = "客户下单操作", notes = "小程序")
     @RequestMapping(value = "/make", method = RequestMethod.POST)
-    public PublicResult<Object> insert(@RequestBody OrderInput model) throws Exception {
+    public PublicResult<Object> insert(@RequestBody CustomerOrderInput model) throws Exception {
         try {
-            Order r = _orderService.insertOrder(model);
+            CustomerOrder r = _customerOrderService.insertOrder(model);
             if (!r.getId().isEmpty()) {
-                SortedMap<String, Object> result = new TreeMap<>();
-                if (model.payType == 1) {
-                    result = _orderService.wxPay(r);
-                } else {
-                }
+                SortedMap<String, Object> result;
+                result = _customerOrderService.wxPay(r);
                 if (!result.isEmpty()) {
                     return new PublicResult<>(PublicResultConstant.SUCCESS, result);
                 }
@@ -128,10 +126,10 @@ public class ChatController {
     @RequestMapping(value = "/charge", method = RequestMethod.POST)
     public PublicResult<Object> charge(@RequestBody ChargeOrderInput model) throws Exception {
         try {
-            Chargeorder r = _orderService.insertChargeOrder(model);
+            Chargeorder r = _chargeOrderService.insertChargeOrder(model);
             if (!r.getId().isEmpty()) {
                 SortedMap<String, Object> result;
-                result = _orderService.wxChargePay(r);
+                result = _chargeOrderService.wxChargePay(r);
                 if (!result.isEmpty()) {
                     return new PublicResult<>(PublicResultConstant.SUCCESS, result);
                 }
@@ -153,7 +151,7 @@ public class ChatController {
             ew.eq("openId", openId);
             Customer r = _customerService.selectOne(ew);
             if (r != null) {
-                Integer count = _orderService.selectCount(ew);
+                Integer count = _customerOrderService.selectCount(ew);
                 res.setBalance(r.getBalance());
                 res.setOrder(count);
                 return new PublicResult<>(PublicResultConstant.SUCCESS, res);
@@ -167,30 +165,30 @@ public class ChatController {
     @Pass
     @ApiOperation(value = "获取订单列表", notes = "小程序")
     @RequestMapping(value = "/orders", method = RequestMethod.POST)
-    public PublicResult<Page<Order>> orders(@RequestBody PagedAndFilterInputDto page) throws Exception {
-        EntityWrapper<Order> filter = new EntityWrapper<>();
+    public PublicResult<Page<CustomerOrder>> orders(@RequestBody PagedAndFilterInputDto page) throws Exception {
+        EntityWrapper<CustomerOrder> filter = new EntityWrapper<>();
         String openId = (String) page.where.get("openId");
         filter.eq("openId", openId);
-        Page<Order> res = _orderService.selectPage(new Page<>(page.index, page.size), filter);
+        Page<CustomerOrder> res = _customerOrderService.selectPage(new Page<>(page.index, page.size), filter);
         return new PublicResult<>(PublicResultConstant.SUCCESS, res);
     }
 
     @Pass
     @ApiOperation(value = "获取订单详情", notes = "小程序")
     @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
-    public PublicResult<Order> order(@PathVariable String id) throws Exception {
-       Order o= _orderService.selectById(id);
-       if(o==null)return  new PublicResult<Order>(PublicResultConstant.FAILED,null);
+    public PublicResult<CustomerOrder> order(@PathVariable String id) throws Exception {
+        CustomerOrder o= _customerOrderService.selectById(id);
+       if(o==null)return  new PublicResult<CustomerOrder>(PublicResultConstant.FAILED,null);
         return new PublicResult<>(PublicResultConstant.SUCCESS, o);
     }
     @Pass
     @ApiOperation(value = "更新订单进度", notes = "小程序")
     @RequestMapping(value = "/order/{id}/{state}", method = RequestMethod.PUT)
-    public PublicResult<Order> update(@PathVariable String id,@PathVariable Integer state) throws Exception {
-        Order o= _orderService.selectById(id);
-        if(o==null)return  new PublicResult<Order>(PublicResultConstant.FAILED,null);
+    public PublicResult<CustomerOrder> update(@PathVariable String id,@PathVariable Integer state) throws Exception {
+        CustomerOrder o= _customerOrderService.selectById(id);
+        if(o==null)return  new PublicResult<CustomerOrder>(PublicResultConstant.FAILED,null);
         o.setOrderState(state);
-        _orderService.updateById(o);
+        _customerOrderService.updateById(o);
         return new PublicResult<>(PublicResultConstant.SUCCESS, o);
     }
 }

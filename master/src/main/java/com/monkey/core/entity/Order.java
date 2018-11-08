@@ -12,11 +12,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author zhaohejing
- * @since 2018-11-05
+ * @since 2018-11-08
  */
 @TableName("sale_order")
 public class Order extends Model<Order> {
@@ -26,39 +26,16 @@ public class Order extends Model<Order> {
     /**
      * 主键
      */
-    /**
-     * guid
-     */
     @TableId(value = "id", type = IdType.UUID)
     private String id;
-    /**
-     * 客户id
-     */
-    private String openId;
     /**
      * 烘干类型(纯棉 化纤 其他)
      */
     private Integer dryType;
     /**
-     * 客户姓名
+     * 对接订单
      */
-    private String customerName;
-    /**
-     * 手机
-     */
-    private String mobile;
-    /**
-     * 地区
-     */
-    private String area;
-    /**
-     * 小区
-     */
-    private String community;
-    /**
-     * 取件地址
-     */
-    private String address;
+    private String orderNum;
     /**
      * 订单状态
      */
@@ -70,19 +47,11 @@ public class Order extends Model<Order> {
     /**
      * 设备id
      */
-    private Integer deviceId;
+    private String deviceNum;
     /**
      * 支付类型  微信 支付宝
      */
     private Integer payType;
-    /**
-     * 是否次数支付
-     */
-    private Integer isTime;
-    /**
-     * 是否次数支付
-     */
-    private Integer price;
     /**
      * 创建时间
      */
@@ -93,7 +62,14 @@ public class Order extends Model<Order> {
      */
     @TableField(fill = FieldFill.INSERT)
     private Integer creatorUserId;
-
+    /**
+     * 价格
+     */
+    private Integer price;
+    /**
+     * 绑定客户订单信息
+     */
+    private String customerOrder;
 
     public String getId() {
         return id;
@@ -101,14 +77,6 @@ public class Order extends Model<Order> {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getOpenId() {
-        return openId;
-    }
-
-    public void setOpenId(String openId) {
-        this.openId = openId;
     }
 
     public Integer getDryType() {
@@ -119,44 +87,12 @@ public class Order extends Model<Order> {
         this.dryType = dryType;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getOrderNum() {
+        return orderNum;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getCommunity() {
-        return community;
-    }
-
-    public void setCommunity(String community) {
-        this.community = community;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
     }
 
     public Integer getOrderState() {
@@ -175,13 +111,6 @@ public class Order extends Model<Order> {
         this.payState = payState;
     }
 
-    public Integer getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(Integer deviceId) {
-        this.deviceId = deviceId;
-    }
 
     public Integer getPayType() {
         return payType;
@@ -189,14 +118,6 @@ public class Order extends Model<Order> {
 
     public void setPayType(Integer payType) {
         this.payType = payType;
-    }
-
-    public Integer getIsTime() {
-        return isTime;
-    }
-
-    public void setIsTime(Integer isTime) {
-        this.isTime = isTime;
     }
 
     public Date getCreationTime() {
@@ -215,6 +136,22 @@ public class Order extends Model<Order> {
         this.creatorUserId = creatorUserId;
     }
 
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public String getCustomerOrder() {
+        return customerOrder;
+    }
+
+    public void setCustomerOrder(String customerOrder) {
+        this.customerOrder = customerOrder;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -223,29 +160,25 @@ public class Order extends Model<Order> {
     @Override
     public String toString() {
         return "Order{" +
-        "id=" + id +
-        ", openId=" + openId +
-        ", dryType=" + dryType +
-        ", customerName=" + customerName +
-        ", mobile=" + mobile +
-        ", area=" + area +
-        ", community=" + community +
-        ", address=" + address +
-        ", orderState=" + orderState +
-        ", payState=" + payState +
-        ", deviceId=" + deviceId +
-        ", payType=" + payType +
-        ", isTime=" + isTime +
-        ", creationTime=" + creationTime +
-        ", creatorUserId=" + creatorUserId +
-        "}";
+                "id=" + id +
+                ", dryType=" + dryType +
+                ", orderNum=" + orderNum +
+                ", orderState=" + orderState +
+                ", payState=" + payState +
+                ", deviceNum=" + deviceNum +
+                ", payType=" + payType +
+                ", creationTime=" + creationTime +
+                ", creatorUserId=" + creatorUserId +
+                ", price=" + price +
+                ", customerOrder=" + customerOrder +
+                "}";
     }
 
-    public Integer getPrice() {
-        return price;
+    public String getDeviceNum() {
+        return deviceNum;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public void setDeviceNum(String deviceNum) {
+        this.deviceNum = deviceNum;
     }
 }

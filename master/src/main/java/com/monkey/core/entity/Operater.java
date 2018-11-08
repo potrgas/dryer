@@ -54,6 +54,8 @@ public class Operater extends Model<Operater> {
     @TableField(fill = FieldFill.INSERT)
     private Integer creatorUserId;
 
+    private Integer orderCount;
+
 
     public Integer getId() {
         return id;
@@ -118,5 +120,13 @@ public class Operater extends Model<Operater> {
         ", creationTime=" + creationTime +
         ", creatorUserId=" + creatorUserId +
         "}";
+    }
+
+    public Integer getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Integer orderCount) {
+        this.orderCount = orderCount;
     }
 }

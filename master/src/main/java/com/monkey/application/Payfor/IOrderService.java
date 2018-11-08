@@ -24,19 +24,15 @@ import java.util.SortedMap;
  */
 public interface IOrderService extends IService<Order> {
     Order insertOrder(OrderInput input) throws Exception;
-    Chargeorder insertChargeOrder(ChargeOrderInput input) throws Exception;
+    void updateOrderState(String orderNum, Integer orderState, Integer payState,String backNum);
 
-    String weixinPay(Order input) throws Exception;
-
-    String aliPay(Order input) throws Exception;
-
-    void updateOrderStatte(String orderNum, Integer orderState, Integer payState,String backNum);
-    SortedMap<String, Object> wxPay(Order input);
-    SortedMap<String, Object> wxChargePay(Chargeorder input);
+    String weixinPayQrCode(Order input) throws Exception;
     String weixinBack(Order input) throws  Exception;
+    String aliPay(Order input) throws Exception;
+    String  aliback(Order input)throws  Exception;
+
     Map<String,Object> getDashboard(Integer tenantId);
     Map<String,Object> getStaticial(Integer tenantId, Date start,Date end);
-    String  aliback(Order input)throws  Exception;
     Page<DeviceSaleStatical>  getDeviceSaleStatical(Page<DeviceSaleStatical> page, StaticalInput input );
     Page<ProductSaleStatical>  getProductSaleStatical(Page<ProductSaleStatical> page, StaticalInput input );
 }

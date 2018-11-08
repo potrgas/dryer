@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.monkey.application.Device.IPointService;
 import com.monkey.application.OperationLogs.IOperaterService;
+import com.monkey.application.Payfor.ICustomerOrderService;
 import com.monkey.application.dtos.PagedAndFilterInputDto;
 import com.monkey.common.base.Constant;
 import com.monkey.common.base.PermissionConst;
@@ -45,6 +46,8 @@ import java.util.List;
 public class OperaterController {
     @Autowired
     IOperaterService _operaterService;
+    @Autowired
+    ICustomerOrderService _orderService;
 
     @ApiOperation(value = "获取运维人员列表", notes = "运维人员")
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -78,6 +81,7 @@ public class OperaterController {
         Boolean r = _operaterService.insertOrUpdate(o);
         return new PublicResult<>(PublicResultConstant.SUCCESS, r);
     }
+
     @Log(description = "运维接口:/删除运维")
     @ApiOperation(value = "删除运维", notes = "运维人员")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -102,12 +106,16 @@ public class OperaterController {
         if (ComUtil.isEmpty(input.userName) || ComUtil.isEmpty(input.passWord)) {
             return new PublicResult<>(PublicResultConstant.PARAM_ERROR, null);
         }
-        EntityWrapper<Operater> ew = new EntityWrapper<>();
+        EntityWrapper ew = new EntityWrapper<>();
         ew.eq("account", input.userName);
         Operater user = _operaterService.selectOne(ew);
         if (ComUtil.isEmpty(user) || !BCrypt.checkpw(input.passWord, user.getPassword())) {
             return new PublicResult<>(PublicResultConstant.INVALID_USERNAME_PASSWORD, null);
         }
+        ew = new EntityWrapper<>();
+        ew.eq("operaterId", user.getId());
+        Integer count = _orderService.selectCount(ew);
+        user.setOrderCount(count);
         return new PublicResult<>(PublicResultConstant.SUCCESS, user);
     }
 }

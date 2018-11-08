@@ -66,7 +66,7 @@ public class Serial extends Model<Serial> {
     /**
      * 设备id
      */
-    private Integer deviceId;
+    private String deviceNum;
     /**
      * 设备名
      */
@@ -155,13 +155,6 @@ public class Serial extends Model<Serial> {
         this.type = type;
     }
 
-    public Integer getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(Integer deviceId) {
-        this.deviceId = deviceId;
-    }
 
     public String getDeviceName() {
         return deviceName;
@@ -204,10 +197,17 @@ public class Serial extends Model<Serial> {
         ", productId=" + productId +
         ", productName=" + productName +
         ", type=" + type +
-        ", deviceId=" + deviceId +
+        ", deviceNum=" + deviceNum +
         ", deviceName=" + deviceName +
         ", pointId=" + pointId +
         ", pointName=" + pointName +
         "}";
+    }
+
+    public void setDeviceNum(String deviceNum) {
+        this.deviceNum = deviceNum;
+    }
+    public String getDeviceNum() {
+       return  this.deviceNum;
     }
 }
